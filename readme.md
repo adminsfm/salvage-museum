@@ -74,6 +74,21 @@ with museum photographs.
 
 ## Updating Content
 
+Option 1:
+Use the local website editor.
+
+1. Double-click:
+START-EDITOR.command
+
+2. Open:
+http://localhost:4173/editor
+
+3. Choose a page, click the preview, edit the text, add images, and save.
+
+The editor automatically creates backup copies in:
+.editor-backups/
+
+Option 2:
 Edit the HTML files directly.
 
 No coding system required.

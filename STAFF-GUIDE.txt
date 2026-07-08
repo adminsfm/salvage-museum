@@ -1,0 +1,59 @@
+SALVAGE FISHERMAN'S MUSEUM WEBSITE EDITOR
+
+What this is
+------------
+This is a simple local editor for museum staff.
+It lets staff update text and add photos without opening website code.
+
+The important files are:
+
+START-EDITOR.command
+Double-click this to start the editor.
+
+museum-editor-server.js
+This is the saving engine. Staff should not need to open it.
+
+staff-editor.html
+This is the editor screen staff see in the browser.
+
+.editor-backups/
+This folder is created automatically. Every saved page gets a backup copy.
+
+
+How to use it
+-------------
+1. Double-click START-EDITOR.command.
+2. Open http://localhost:4173/editor if it does not open automatically.
+3. Choose a page from the left side.
+4. Click directly on the page preview and type changes.
+5. To add a photo, click where the photo should go, then drag the photo into the photo box.
+6. Click Save changes.
+
+
+Adding or replacing photos
+--------------------------
+To add a new photo:
+Click a spot on the page, then drag the photo into the photo box.
+
+To replace a photo:
+Click the old photo first, then drag the new photo into the photo box.
+
+The editor copies the photo into the website's images folder.
+
+
+Good habits
+-----------
+Save after each page you edit.
+Use Open page to check the public-looking page after saving.
+Keep original photo files somewhere safe outside the website folder too.
+Do not delete the .editor-backups folder.
+
+
+Handing this to future staff
+----------------------------
+Keep these files together in the website folder:
+START-EDITOR.command
+museum-editor-server.js
+staff-editor.html
+
+Future staff should only need to double-click START-EDITOR.command and follow the steps above.

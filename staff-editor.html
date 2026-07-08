@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Museum Staff Website Editor</title>
+<style>
+:root{
+  --blue:#184a6b;
+  --blue-dark:#0f354d;
+  --red:#8b3a35;
+  --green:#27664e;
+  --ink:#15212d;
+  --muted:#5f6f7d;
+  --line:#d5dee6;
+  --wash:#f3f7f8;
+  --panel:#fff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--wash);color:var(--ink);font-size:18px}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
+.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:22px;display:flex;flex-direction:column;gap:20px}
+.brand h1{font-size:1.45rem;margin:0 0 8px;color:var(--blue)}
+.brand p,.help,.status{color:var(--muted);line-height:1.45;margin:0}
+.step{background:#f8fbfc;border:1px solid var(--line);border-radius:8px;padding:14px}
+.step strong{color:var(--blue-dark)}
+.section-title{font-size:.86rem;text-transform:uppercase;color:var(--muted);letter-spacing:.03em;margin:0 0 8px}
+.pages{display:flex;flex-direction:column;gap:8px;max-height:38vh;overflow:auto;padding-right:4px}
+.page-btn{border:1px solid var(--line);border-radius:8px;background:#fff;text-align:left;padding:13px;line-height:1.25}
+.page-btn.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(24,74,107,.14)}
+.field{display:flex;flex-direction:column;gap:8px}
+input,textarea{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff;width:100%}
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--line);padding:12px 16px}
+.tool{border:1px solid var(--line);background:#fff;border-radius:8px;min-height:46px;padding:10px 14px;color:var(--ink)}
+.tool.primary{background:var(--blue);border-color:var(--blue);color:white;font-weight:bold}
+.tool.good{background:var(--green);border-color:var(--green);color:white;font-weight:bold}
+.tool.warn{background:var(--red);border-color:var(--red);color:white}
+.tool:disabled{opacity:.55;cursor:not-allowed}
+.save-state{margin-left:auto;color:var(--muted);font-size:.95rem}
+.save-state.dirty{color:var(--red);font-weight:bold}
+.workarea{display:grid;grid-template-rows:auto 1fr;gap:12px;padding:16px;min-height:0}
+.drop-zone{border:3px dashed #9fb3c1;border-radius:8px;background:#fff;padding:16px;text-align:center;color:var(--blue-dark);font-weight:bold}
+.drop-zone.ready{border-color:var(--green);background:#eef8f3}
+.drop-zone small{display:block;color:var(--muted);font-weight:normal;margin-top:5px}
+.frame-wrap{min-height:0;position:relative}
+iframe{width:100%;height:calc(100vh - 180px);border:1px solid var(--line);border-radius:8px;background:#fff}
+.image-drawer{position:fixed;right:18px;bottom:18px;width:min(420px,calc(100vw - 36px));max-height:70vh;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 18px 60px rgba(0,0,0,.22);padding:16px;display:none;overflow:auto;z-index:5}
+.image-drawer.open{display:block}
+.image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.image-grid button{border:1px solid var(--line);border-radius:8px;background:#fff;padding:6px;text-align:left}
+.image-grid img{display:block;width:100%;height:80px;object-fit:cover;border-radius:6px;margin-bottom:6px}
+.modal{position:fixed;inset:0;background:rgba(20,28,36,.48);display:none;align-items:center;justify-content:center;padding:18px;z-index:10}
+.modal.open{display:flex}
+.dialog{background:#fff;border-radius:8px;padding:20px;max-width:720px;width:100%;box-shadow:0 18px 60px rgba(0,0,0,.25)}
+.dialog h2{margin:0 0 10px;color:var(--blue)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.sr-only{position:absolute;left:-9999px}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{border-right:0;border-bottom:1px solid var(--line)}
+  .pages{max-height:220px}
+  iframe{height:70vh}
+  .save-state{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>Museum Staff Website Editor</h1>
+      <p>Made for simple handoff: choose a page, click the words, add photos, save.</p>
+    </div>
+
+    <div class="step"><strong>1.</strong> Choose a page from the list.</div>
+    <div class="step"><strong>2.</strong> Click directly on the page preview and type.</div>
+    <div class="step"><strong>3.</strong> Drag photos into the photo box, then save.</div>
+
+    <div>
+      <h2 class="section-title">Website Pages</h2>
+      <div id="pages" class="pages"></div>
+    </div>
+
+    <div class="field">
+      <h2 class="section-title">Add A New Page</h2>
+      <input id="newTitle" placeholder="Example: Summer Events">
+      <button class="tool" id="createPage">Add page</button>
+    </div>
+
+    <div class="field">
+      <h2 class="section-title">Donation Or Payment</h2>
+      <button class="tool" id="paymentButton">Paste donation code</button>
+      <p class="help">Use this when Zeffy, Stripe, PayPal, or another service gives you embed code.</p>
+    </div>
+
+    <p id="status" class="status">Loading editor...</p>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="tool primary" id="save">Save changes</button>
+      <button class="tool" data-cmd="bold"><strong>Bold</strong></button>
+      <button class="tool" data-cmd="italic"><em>Italic</em></button>
+      <button class="tool" id="heading">Make heading</button>
+      <button class="tool" id="paragraph">Normal text</button>
+      <button class="tool" id="link">Add link</button>
+      <button class="tool" id="image">Choose photo</button>
+      <button class="tool" id="library">Photo library</button>
+      <button class="tool" id="viewSite">Open page</button>
+      <span id="saveState" class="save-state">No changes yet</span>
+      <input id="imageFile" type="file" accept="image/*" multiple hidden>
+    </div>
+
+    <div class="workarea">
+      <div id="dropZone" class="drop-zone">
+        Drag photos here to add them to the selected page
+        <small>Tip: click a spot in the page first. If you click an existing photo, the new photo will replace it.</small>
+      </div>
+      <div class="frame-wrap">
+        <iframe id="preview" title="Editable website page preview"></iframe>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="imageDrawer" class="image-drawer">
+  <div class="row" style="justify-content:space-between;margin-top:0">
+    <h2 class="section-title" style="margin:0">Photo Library</h2>
+    <button class="tool" id="closeLibrary">Close</button>
+  </div>
+  <p class="help" style="margin:8px 0 12px">Click a photo to place it where your cursor is. Click an existing photo on the page first to replace it.</p>
+  <div id="imageGrid" class="image-grid"></div>
+</div>
+
+<div id="paymentModal" class="modal">
+  <div class="dialog">
+    <h2>Donation or Payment Code</h2>
+    <p class="help">Paste the code from Zeffy, Stripe, PayPal, Shopify, Snipcart, or another provider. This updates the Support page.</p>
+    <textarea id="paymentCode" placeholder="Paste the embed code here"></textarea>
+    <div class="row">
+      <button class="tool good" id="savePayment">Save to Support page</button>
+      <button class="tool" id="closePayment">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentFile = "";
+let lastRange = null;
+let selectedImage = null;
+let dirty = false;
+
+const pagesEl = document.getElementById("pages");
+const frame = document.getElementById("preview");
+const statusEl = document.getElementById("status");
+const saveStateEl = document.getElementById("saveState");
+const dropZone = document.getElementById("dropZone");
+const imageFile = document.getElementById("imageFile");
+const imageDrawer = document.getElementById("imageDrawer");
+const imageGrid = document.getElementById("imageGrid");
+
+function status(message) {
+  statusEl.textContent = message;
+}
+
+function setDirty(value) {
+  dirty = value;
+  saveStateEl.textContent = value ? "Unsaved changes" : "Saved";
+  saveStateEl.classList.toggle("dirty", value);
+}
+
+async function api(url, options) {
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || "Something went wrong.");
+  }
+  return response.json();
+}
+
+async function loadPages(selectFile) {
+  const pages = await api("/api/pages");
+  pagesEl.innerHTML = "";
+  pages.forEach(page => {
+    const button = document.createElement("button");
+    button.className = "page-btn" + (page.file === currentFile ? " active" : "");
+    button.textContent = page.title || page.file;
+    button.title = page.file;
+    button.onclick = () => {
+      if (dirty && !confirm("You have unsaved changes. Open another page anyway?")) return;
+      loadPage(page.file);
+    };
+    pagesEl.appendChild(button);
+  });
+  if (!currentFile && pages.length) {
+    await loadPage(selectFile || pages[0].file);
+  }
+}
+
+async function loadPage(file) {
+  const page = await api("/api/page?file=" + encodeURIComponent(file));
+  currentFile = page.file;
+  selectedImage = null;
+  lastRange = null;
+  frame.srcdoc = prepareForEditing(page.html);
+  status("Loaded " + file + ". Click the preview to edit.");
+  setDirty(false);
+  [...pagesEl.children].forEach(button => button.classList.toggle("active", button.title === file));
+}
+
+function prepareForEditing(html) {
+  return html.replace(/<script([^>]*)\ssrc=(["'])([^"']+)\2([^>]*)><\/script>/gi, (match, before, quote, src, after) => {
+    return "<script" + before + after + " type=\"text/plain\" data-editor-disabled-src=\"" + src + "\"><" + "/script>";
+  });
+}
+
+function cleanForSaving(doc) {
+  const clone = doc.documentElement.cloneNode(true);
+  clone.querySelectorAll("[data-editor-style]").forEach(node => node.remove());
+  clone.querySelectorAll("[data-editor-selected]").forEach(node => node.removeAttribute("data-editor-selected"));
+  clone.querySelectorAll("script[data-editor-disabled-src]").forEach(script => {
+    script.setAttribute("src", script.getAttribute("data-editor-disabled-src"));
+    script.removeAttribute("data-editor-disabled-src");
+    if (script.getAttribute("type") === "text/plain") script.removeAttribute("type");
+  });
+  return "<!DOCTYPE html>\n" + clone.outerHTML;
+}
+
+function editableDoc() {
+  return frame.contentDocument;
+}
+
+function rememberSelection() {
+  const doc = editableDoc();
+  if (!doc) return;
+  const selection = doc.getSelection();
+  if (selection && selection.rangeCount) {
+    lastRange = selection.getRangeAt(0).cloneRange();
+  }
+}
+
+function setupEditableFrame() {
+  const doc = editableDoc();
+  if (!doc) return;
+  doc.designMode = "on";
+
+  const style = doc.createElement("style");
+  style.setAttribute("data-editor-style", "true");
+  style.textContent = [
+    "body{outline:none!important}",
+    "a{cursor:text!important}",
+    "p,h1,h2,h3,h4,li,.card,.content,.page-header,.support-box{outline-offset:4px}",
+    "p:hover,h1:hover,h2:hover,h3:hover,h4:hover,li:hover{outline:3px solid rgba(24,74,107,.25)}",
+    "img{max-width:100%;height:auto}",
+    "img:hover{outline:4px solid rgba(39,102,78,.45)}",
+    "img[data-editor-selected]{outline:5px solid #27664e!important}"
+  ].join("");
+  doc.head.appendChild(style);
+
+  doc.addEventListener("selectionchange", rememberSelection);
+  doc.addEventListener("input", () => setDirty(true));
+  doc.addEventListener("click", event => {
+    if (event.target.closest && event.target.closest("a")) event.preventDefault();
+    doc.querySelectorAll("img[data-editor-selected]").forEach(img => img.removeAttribute("data-editor-selected"));
+    selectedImage = event.target && event.target.tagName === "IMG" ? event.target : null;
+    if (selectedImage) {
+      selectedImage.setAttribute("data-editor-selected", "true");
+      status("Photo selected. Drag or choose a new photo to replace it.");
+    } else {
+      status("Editing " + currentFile + ". Remember to save.");
+    }
+  });
+
+  doc.addEventListener("dragover", event => {
+    event.preventDefault();
+    dropZone.classList.add("ready");
+  });
+  doc.addEventListener("drop", async event => {
+    event.preventDefault();
+    dropZone.classList.remove("ready");
+    await handleFiles(event.dataTransfer.files);
+  });
+}
+
+frame.addEventListener("load", setupEditableFrame);
+
+function exec(command, value = null) {
+  const doc = editableDoc();
+  if (!doc) return;
+  frame.contentWindow.focus();
+  doc.execCommand(command, false, value);
+  setDirty(true);
+}
+
+document.querySelectorAll("[data-cmd]").forEach(button => {
+  button.addEventListener("click", () => exec(button.dataset.cmd));
+});
+
+document.getElementById("heading").onclick = () => exec("formatBlock", "h2");
+document.getElementById("paragraph").onclick = () => exec("formatBlock", "p");
+document.getElementById("link").onclick = () => {
+  const href = prompt("Paste the link address:");
+  if (href) exec("createLink", href);
+};
+
+function placeImage(src, altText) {
+  const doc = editableDoc();
+  if (!doc) return;
+
+  if (selectedImage) {
+    selectedImage.setAttribute("src", src);
+    selectedImage.setAttribute("alt", altText || "Museum photo");
+    setDirty(true);
+    status("Photo replaced. Save when ready.");
+    return;
+  }
+
+  const img = doc.createElement("img");
+  img.src = src;
+  img.alt = altText || "Museum photo";
+  img.loading = "lazy";
+
+  const paragraph = doc.createElement("p");
+  paragraph.appendChild(img);
+
+  const selection = doc.getSelection();
+  selection.removeAllRanges();
+  if (lastRange) selection.addRange(lastRange);
+
+  if (selection.rangeCount) {
+    const range = selection.getRangeAt(0);
+    range.collapse(false);
+    range.insertNode(paragraph);
+  } else {
+    const content = doc.querySelector("main,.content,.cards,body");
+    content.appendChild(paragraph);
+  }
+
+  setDirty(true);
+  status("Photo added. Save when ready.");
+}
+
+async function uploadOne(file) {
+  const form = new FormData();
+  form.append("image", file);
+  const uploaded = await api("/api/upload-image", { method: "POST", body: form });
+  placeImage(uploaded.src, file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "));
+}
+
+async function handleFiles(files) {
+  const images = [...files].filter(file => file.type.startsWith("image/"));
+  if (!images.length) return status("Please drop an image file.");
+  status("Adding photo...");
+  for (const image of images) await uploadOne(image);
+  await loadImageLibrary();
+}
+
+document.getElementById("image").onclick = () => imageFile.click();
+imageFile.onchange = async event => {
+  await handleFiles(event.target.files);
+  event.target.value = "";
+};
+
+["dragenter","dragover"].forEach(type => {
+  dropZone.addEventListener(type, event => {
+    event.preventDefault();
+    dropZone.classList.add("ready");
+  });
+});
+["dragleave","drop"].forEach(type => {
+  dropZone.addEventListener(type, event => {
+    event.preventDefault();
+    dropZone.classList.remove("ready");
+  });
+});
+dropZone.addEventListener("drop", event => handleFiles(event.dataTransfer.files));
+
+async function loadImageLibrary() {
+  const images = await api("/api/images");
+  imageGrid.innerHTML = "";
+  if (!images.length) {
+    imageGrid.innerHTML = "<p class=\"help\">No photos have been added yet.</p>";
+    return;
+  }
+  images.forEach(src => {
+    const button = document.createElement("button");
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = "";
+    const label = document.createElement("span");
+    label.textContent = src.split("/").pop();
+    button.appendChild(img);
+    button.appendChild(label);
+    button.onclick = () => {
+      placeImage(src, src.split("/").pop().replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "));
+      imageDrawer.classList.remove("open");
+    };
+    imageGrid.appendChild(button);
+  });
+}
+
+document.getElementById("library").onclick = async () => {
+  imageDrawer.classList.add("open");
+  await loadImageLibrary();
+};
+document.getElementById("closeLibrary").onclick = () => imageDrawer.classList.remove("open");
+
+document.getElementById("save").onclick = async () => {
+  if (!currentFile) return;
+  const doc = editableDoc();
+  const html = cleanForSaving(doc);
+  status("Saving...");
+  await api("/api/page", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ file: currentFile, html })
+  });
+  setDirty(false);
+  status("Saved " + currentFile + ". A backup copy was made automatically.");
+  await loadPages(currentFile);
+};
+
+document.getElementById("createPage").onclick = async () => {
+  const title = document.getElementById("newTitle").value.trim();
+  if (!title) return status("Add a page title first.");
+  const page = await api("/api/create-page", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title })
+  });
+  document.getElementById("newTitle").value = "";
+  await loadPages(page.file);
+  status("New page created. Add text, photos, and save.");
+};
+
+document.getElementById("viewSite").onclick = () => {
+  if (currentFile) window.open("/" + currentFile, "_blank");
+};
+
+const paymentModal = document.getElementById("paymentModal");
+document.getElementById("paymentButton").onclick = () => paymentModal.classList.add("open");
+document.getElementById("closePayment").onclick = () => paymentModal.classList.remove("open");
+document.getElementById("savePayment").onclick = async () => {
+  const embed = document.getElementById("paymentCode").value.trim();
+  if (!embed) return status("Paste the donation code first.");
+  await api("/api/payment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ embed })
+  });
+  paymentModal.classList.remove("open");
+  status("Donation code saved to support.html");
+  await loadPages("support.html");
+};
+
+window.addEventListener("beforeunload", event => {
+  if (!dirty) return;
+  event.preventDefault();
+  event.returnValue = "";
+});
+
+loadPages().catch(error => status(error.message));
+</script>
+</body>
+</html>

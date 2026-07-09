@@ -314,6 +314,7 @@ nav a:hover {
 .card img {
   display: block;
   width: calc(100% + 52px);
+  max-width: none;
   height: 180px;
   object-fit: cover;
   margin: -26px -26px 22px;
@@ -324,8 +325,9 @@ nav a:hover {
   display: grid;
   place-items: center;
   width: calc(100% + 52px);
-  min-height: 150px;
+  height: 180px;
   margin: -26px -26px 22px;
+  overflow: hidden;
   background:
     linear-gradient(135deg, rgba(31, 86, 112, .12), rgba(197, 150, 74, .18)),
     var(--mist);
@@ -335,6 +337,15 @@ nav a:hover {
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
+}
+
+.photo-placeholder img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  border: 0;
 }
 
 .card h3 {
@@ -357,6 +368,42 @@ nav a:hover {
 
 .email-line {
   font-size: .96rem;
+}
+
+.tone-white {
+  background: var(--white);
+}
+
+.tone-sand {
+  background: var(--sand);
+}
+
+.tone-mist {
+  background: var(--mist);
+}
+
+.tone-blue {
+  background: var(--blue-dark);
+  color: var(--white);
+  border-color: rgba(255, 255, 255, .2);
+}
+
+.tone-blue h2,
+.tone-blue h3 {
+  color: #f6e4bd;
+}
+
+.tone-blue p,
+.tone-blue small {
+  color: var(--white);
+}
+
+.tone-blue a {
+  color: #f6e4bd;
+}
+
+.tone-red-accent {
+  border-left: 6px solid var(--red);
 }
 
 .timeline {

@@ -17,11 +17,11 @@
   --panel:#fff;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--wash);color:var(--ink);font-size:18px}
+html,body{margin:0;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:var(--wash);color:var(--ink);font-size:18px}
 button,input,textarea{font:inherit}
 button{cursor:pointer}
-.app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
-.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:22px;display:flex;flex-direction:column;gap:20px}
+.app{display:grid;grid-template-columns:340px 1fr;height:100vh;min-height:0;overflow:hidden}
+.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:22px;display:flex;flex-direction:column;gap:20px;height:100vh;overflow:auto}
 .brand h1{font-size:1.45rem;margin:0 0 8px;color:var(--blue)}
 .brand p,.help,.status{color:var(--muted);line-height:1.45;margin:0}
 .step{background:#f8fbfc;border:1px solid var(--line);border-radius:8px;padding:14px}
@@ -31,22 +31,22 @@ button{cursor:pointer}
 .page-btn{border:1px solid var(--line);border-radius:8px;background:#fff;text-align:left;padding:13px;line-height:1.25}
 .page-btn.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(24,74,107,.14)}
 .field{display:flex;flex-direction:column;gap:8px}
-input,textarea{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff;width:100%}
-.main{display:flex;flex-direction:column;min-width:0}
-.topbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--line);padding:12px 16px}
-.tool{border:1px solid var(--line);background:#fff;border-radius:8px;min-height:46px;padding:10px 14px;color:var(--ink)}
+input,textarea,select{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff;width:100%}
+.main{display:flex;flex-direction:column;min-width:0;min-height:0;height:100vh;overflow:hidden}
+.topbar{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;background:#fff;border-bottom:1px solid var(--line);padding:8px 12px;overflow-x:auto;overflow-y:hidden;flex:0 0 auto}
+.tool{border:1px solid var(--line);background:#fff;border-radius:8px;min-height:38px;padding:8px 12px;color:var(--ink);white-space:nowrap;flex:0 0 auto}
 .tool.primary{background:var(--blue);border-color:var(--blue);color:white;font-weight:bold}
 .tool.good{background:var(--green);border-color:var(--green);color:white;font-weight:bold}
 .tool.warn{background:var(--red);border-color:var(--red);color:white}
 .tool:disabled{opacity:.55;cursor:not-allowed}
-.save-state{margin-left:auto;color:var(--muted);font-size:.95rem}
+.save-state{margin-left:8px;color:var(--muted);font-size:.95rem;white-space:nowrap;flex:0 0 auto}
 .save-state.dirty{color:var(--red);font-weight:bold}
-.workarea{display:grid;grid-template-rows:auto 1fr;gap:12px;padding:16px;min-height:0}
-.drop-zone{border:3px dashed #9fb3c1;border-radius:8px;background:#fff;padding:16px;text-align:center;color:var(--blue-dark);font-weight:bold}
+.workarea{display:flex;flex-direction:column;gap:8px;padding:10px 12px 12px;min-height:0;overflow:hidden;flex:1 1 auto}
+.drop-zone{border:2px dashed #9fb3c1;border-radius:8px;background:#fff;padding:8px 14px;text-align:center;color:var(--blue-dark);font-weight:bold;flex:0 0 auto}
 .drop-zone.ready{border-color:var(--green);background:#eef8f3}
-.drop-zone small{display:block;color:var(--muted);font-weight:normal;margin-top:5px}
-.frame-wrap{min-height:0;position:relative}
-iframe{width:100%;height:calc(100vh - 180px);border:1px solid var(--line);border-radius:8px;background:#fff}
+.drop-zone small{display:block;color:var(--muted);font-weight:normal;margin-top:3px}
+.frame-wrap{min-height:0;position:relative;flex:1 1 auto;display:flex}
+iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
 .image-drawer{position:fixed;right:18px;bottom:18px;width:min(420px,calc(100vw - 36px));max-height:70vh;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 18px 60px rgba(0,0,0,.22);padding:16px;display:none;overflow:auto;z-index:5}
 .image-drawer.open{display:block}
 .image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
@@ -55,12 +55,40 @@ iframe{width:100%;height:calc(100vh - 180px);border:1px solid var(--line);border
 .modal{position:fixed;inset:0;background:rgba(20,28,36,.48);display:none;align-items:center;justify-content:center;padding:18px;z-index:10}
 .modal.open{display:flex}
 .dialog{background:#fff;border-radius:8px;padding:20px;max-width:720px;width:100%;box-shadow:0 18px 60px rgba(0,0,0,.25)}
+.help-dialog{max-width:980px;max-height:88vh;overflow:auto}
 .dialog h2{margin:0 0 10px;color:var(--blue)}
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}
+.guide-card{border:1px solid var(--line);border-radius:8px;background:#f8fbfc;padding:14px}
+.guide-card h3{margin:10px 0 6px;color:var(--blue-dark);font-size:1rem}
+.guide-card p{margin:0;color:var(--muted);line-height:1.4;font-size:.95rem}
+.mini-picture{height:120px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px;display:grid;gap:7px}
+.mini-editor{grid-template-columns:32% 1fr}
+.mini-sidebar{background:#eef3f5;border-radius:5px;padding:6px;display:grid;gap:5px}
+.mini-page{height:14px;background:#fff;border:1px solid #cbd7df;border-radius:4px}
+.mini-page.active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,74,107,.18)}
+.mini-preview{background:#fbf7ee;border-radius:5px;padding:7px;display:grid;grid-template-rows:18px 1fr;gap:7px}
+.mini-bar{background:var(--blue);border-radius:4px}
+.mini-card-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.mini-card{background:#fff;border:1px solid #d5dee6;border-radius:5px;padding:5px}
+.mini-photo{height:26px;background:linear-gradient(135deg,#dfe9ea,#e8ddc5);border-radius:3px;margin-bottom:5px}
+.mini-line{height:6px;background:#c9d4db;border-radius:3px;margin-bottom:4px}
+.mini-toolbar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;align-content:start}
+.mini-button{height:24px;background:#fff;border:1px solid #cbd7df;border-radius:5px}
+.mini-button.primary{background:var(--blue)}
+.mini-template{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mini-template .mini-card{display:grid;grid-template-rows:32px 8px 8px;gap:6px}
+.mini-palette{display:flex;gap:8px;align-items:center;justify-content:center}
+.swatch{width:34px;height:34px;border-radius:50%;border:1px solid var(--line)}
+.swatch.sand{background:#e8ddc5}.swatch.mist{background:#edf3f2}.swatch.blue{background:#123847}.swatch.red{background:#8f3f35}
+.guide-steps{margin:14px 0 0;padding-left:20px;color:var(--ink);line-height:1.5}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .sr-only{position:absolute;left:-9999px}
 @media(max-width:900px){
-  .app{grid-template-columns:1fr}
-  .sidebar{border-right:0;border-bottom:1px solid var(--line)}
+  html,body{overflow:auto}
+  .app{grid-template-columns:1fr;height:auto;overflow:visible}
+  .sidebar{height:auto;max-height:none;overflow:visible;border-right:0;border-bottom:1px solid var(--line)}
+  .main{height:auto;min-height:80vh;overflow:visible}
+  .workarea{min-height:70vh}
   .pages{max-height:220px}
   iframe{height:70vh}
   .save-state{margin-left:0;width:100%}
@@ -75,6 +103,8 @@ iframe{width:100%;height:calc(100vh - 180px);border:1px solid var(--line);border
       <p>Made for simple handoff: choose a page, click the words, add photos, save.</p>
     </div>
 
+    <button class="tool primary" id="helpButton">Help / Instructions</button>
+
     <div class="step"><strong>1.</strong> Choose a page from the list.</div>
     <div class="step"><strong>2.</strong> Click directly on the page preview and type.</div>
     <div class="step"><strong>3.</strong> Drag photos into the photo box, then save.</div>
@@ -88,12 +118,43 @@ iframe{width:100%;height:calc(100vh - 180px);border:1px solid var(--line);border
       <h2 class="section-title">Add A New Page</h2>
       <input id="newTitle" placeholder="Example: Summer Events">
       <button class="tool" id="createPage">Add page</button>
+      <button class="tool warn" id="deletePage">Delete selected page</button>
+      <p class="help">The homepage cannot be deleted. Deleted pages are backed up first.</p>
     </div>
 
     <div class="field">
       <h2 class="section-title">Donation Or Payment</h2>
       <button class="tool" id="paymentButton">Paste donation code</button>
       <p class="help">Use this when Zeffy, Stripe, PayPal, or another service gives you embed code.</p>
+    </div>
+
+    <div class="field">
+      <h2 class="section-title">Add Section Template</h2>
+      <select id="templateChoice">
+        <option value="text-section">Text section</option>
+        <option value="photo-card">Single photo box</option>
+        <option value="three-cards">Three photo boxes</option>
+        <option value="note">Information note</option>
+        <option value="timeline">Timeline item</option>
+        <option value="support">Callout band</option>
+      </select>
+      <button class="tool" id="addTemplate">Add selected template</button>
+      <p class="help">Templates use the same layout, fonts, and spacing as the current website.</p>
+    </div>
+
+    <div class="field">
+      <h2 class="section-title">Style Selected Box</h2>
+      <select id="toneChoice">
+        <option value="">Default</option>
+        <option value="tone-sand">Warm beige</option>
+        <option value="tone-mist">Pale blue</option>
+        <option value="tone-white">White</option>
+        <option value="tone-blue">Museum blue</option>
+        <option value="tone-red-accent">Red accent</option>
+      </select>
+      <button class="tool" id="applyTone">Apply color</button>
+      <button class="tool warn" id="deleteBox">Delete selected box</button>
+      <p class="help">Click a card, note, timeline item, or callout first.</p>
     </div>
 
     <p id="status" class="status">Loading editor...</p>
@@ -107,8 +168,16 @@ iframe{width:100%;height:calc(100vh - 180px);border:1px solid var(--line);border
       <button class="tool" id="heading">Make heading</button>
       <button class="tool" id="paragraph">Normal text</button>
       <button class="tool" id="link">Add link</button>
+      <button class="tool" id="addTextBox">Add text box</button>
+      <button class="tool" id="addPhotoBox">Add photo box</button>
       <button class="tool" id="image">Choose photo</button>
       <button class="tool" id="library">Photo library</button>
+      <button class="tool" data-crop="left">Photo left</button>
+      <button class="tool" data-crop="center">Center photo</button>
+      <button class="tool" data-crop="right">Photo right</button>
+      <button class="tool" data-crop="up">Photo up</button>
+      <button class="tool" data-crop="down">Photo down</button>
+      <button class="tool" id="helpButtonTop">Help</button>
       <button class="tool" id="viewSite">Open page</button>
       <span id="saveState" class="save-state">No changes yet</span>
       <input id="imageFile" type="file" accept="image/*" multiple hidden>
@@ -147,10 +216,112 @@ iframe{width:100%;height:calc(100vh - 180px);border:1px solid var(--line);border
   </div>
 </div>
 
+<div id="helpModal" class="modal">
+  <div class="dialog help-dialog">
+    <div class="row" style="justify-content:space-between;margin-top:0">
+      <div>
+        <h2>How to Use the Website Editor</h2>
+        <p class="help">This editor is meant for everyday museum updates: words, photos, pages, and simple sections.</p>
+      </div>
+      <button class="tool" id="closeHelp">Close</button>
+    </div>
+
+    <div class="guide-grid">
+      <div class="guide-card">
+        <div class="mini-picture mini-editor">
+          <div class="mini-sidebar">
+            <div class="mini-page active"></div>
+            <div class="mini-page"></div>
+            <div class="mini-page"></div>
+            <div class="mini-page"></div>
+          </div>
+          <div class="mini-preview">
+            <div class="mini-bar"></div>
+            <div class="mini-card-row">
+              <div class="mini-card"><div class="mini-photo"></div><div class="mini-line"></div><div class="mini-line"></div></div>
+              <div class="mini-card"><div class="mini-photo"></div><div class="mini-line"></div><div class="mini-line"></div></div>
+              <div class="mini-card"><div class="mini-photo"></div><div class="mini-line"></div><div class="mini-line"></div></div>
+            </div>
+          </div>
+        </div>
+        <h3>Choose a page</h3>
+        <p>Use the Website Pages list on the left. The selected page opens in the large preview area.</p>
+      </div>
+
+      <div class="guide-card">
+        <div class="mini-picture mini-toolbar">
+          <div class="mini-button primary"></div>
+          <div class="mini-button"></div>
+          <div class="mini-button"></div>
+          <div class="mini-button"></div>
+          <div class="mini-button"></div>
+          <div class="mini-button"></div>
+          <div class="mini-button"></div>
+          <div class="mini-button"></div>
+        </div>
+        <h3>Edit and save</h3>
+        <p>Click words in the preview and type. Use the top toolbar for bold, headings, links, photos, and saving.</p>
+      </div>
+
+      <div class="guide-card">
+        <div class="mini-picture mini-template">
+          <div class="mini-card"><div class="mini-photo"></div><div class="mini-line"></div><div class="mini-line"></div></div>
+          <div class="mini-card"><div class="mini-photo"></div><div class="mini-line"></div><div class="mini-line"></div></div>
+        </div>
+        <h3>Add sections</h3>
+        <p>Use Add Section Template for text sections, photo boxes, notes, timeline items, and callout bands.</p>
+      </div>
+
+      <div class="guide-card">
+        <div class="mini-picture">
+          <div class="mini-card" style="height:100%">
+            <div class="mini-photo" style="height:58px"></div>
+            <div class="mini-line"></div>
+            <div class="mini-line"></div>
+          </div>
+        </div>
+        <h3>Add and crop photos</h3>
+        <p>Click a photo box, then choose or drag a photo. Use Photo up/down/left/right to adjust the crop.</p>
+      </div>
+
+      <div class="guide-card">
+        <div class="mini-picture mini-palette">
+          <div class="swatch sand"></div>
+          <div class="swatch mist"></div>
+          <div class="swatch blue"></div>
+          <div class="swatch red"></div>
+        </div>
+        <h3>Change color safely</h3>
+        <p>Click a box, then use Style Selected Box. The choices are limited to the museum color palette.</p>
+      </div>
+
+      <div class="guide-card">
+        <div class="mini-picture mini-editor">
+          <div class="mini-sidebar"><div class="mini-page active"></div><div class="mini-page"></div><div class="mini-button primary"></div></div>
+          <div class="mini-preview"><div class="mini-bar"></div><div class="mini-line"></div><div class="mini-line"></div><div class="mini-line"></div></div>
+        </div>
+        <h3>Publish later</h3>
+        <p>Save changes here first. Then use GitHub Desktop to commit and push when you are ready.</p>
+      </div>
+    </div>
+
+    <ol class="guide-steps">
+      <li>Pick a page from the left.</li>
+      <li>Click the words or box you want to change.</li>
+      <li>Add templates or photos only where needed.</li>
+      <li>Click Save changes before leaving the page.</li>
+      <li>Use GitHub Desktop to commit and push when the website is ready to update online.</li>
+    </ol>
+  </div>
+</div>
+
 <script>
 let currentFile = "";
 let lastRange = null;
 let selectedImage = null;
+let selectedPhotoBox = null;
+let selectedBlock = null;
+let draggedEditorPhoto = null;
 let dirty = false;
 
 const pagesEl = document.getElementById("pages");
@@ -161,6 +332,9 @@ const dropZone = document.getElementById("dropZone");
 const imageFile = document.getElementById("imageFile");
 const imageDrawer = document.getElementById("imageDrawer");
 const imageGrid = document.getElementById("imageGrid");
+const templateChoice = document.getElementById("templateChoice");
+const toneChoice = document.getElementById("toneChoice");
+const helpModal = document.getElementById("helpModal");
 
 function status(message) {
   statusEl.textContent = message;
@@ -204,6 +378,7 @@ async function loadPage(file) {
   const page = await api("/api/page?file=" + encodeURIComponent(file));
   currentFile = page.file;
   selectedImage = null;
+  selectedBlock = null;
   lastRange = null;
   frame.srcdoc = prepareForEditing(page.html);
   status("Loaded " + file + ". Click the preview to edit.");
@@ -246,12 +421,18 @@ function setupEditableFrame() {
   const doc = editableDoc();
   if (!doc) return;
   doc.designMode = "on";
+  frame.contentWindow.scrollTo(0, 0);
 
   const style = doc.createElement("style");
   style.setAttribute("data-editor-style", "true");
   style.textContent = [
     "body{outline:none!important}",
     "a{cursor:text!important}",
+    ".card>img{display:block!important;width:calc(100% + 52px)!important;max-width:none!important;height:180px!important;object-fit:cover!important;margin:-26px -26px 22px!important}",
+    ".photo-placeholder{cursor:pointer!important}",
+    ".photo-placeholder img{width:100%!important;height:100%!important;object-fit:cover!important;margin:0!important;border:0!important;display:block!important}",
+    ".photo-placeholder[data-editor-selected]{outline:5px solid #27664e!important;outline-offset:3px}",
+    "[data-editor-block-selected]{outline:5px solid rgba(24,74,107,.45)!important;outline-offset:4px}",
     "p,h1,h2,h3,h4,li,.card,.content,.page-header,.support-box{outline-offset:4px}",
     "p:hover,h1:hover,h2:hover,h3:hover,h4:hover,li:hover{outline:3px solid rgba(24,74,107,.25)}",
     "img{max-width:100%;height:auto}",
@@ -264,11 +445,20 @@ function setupEditableFrame() {
   doc.addEventListener("input", () => setDirty(true));
   doc.addEventListener("click", event => {
     if (event.target.closest && event.target.closest("a")) event.preventDefault();
+    doc.querySelectorAll("[data-editor-block-selected]").forEach(block => block.removeAttribute("data-editor-block-selected"));
+    doc.querySelectorAll(".photo-placeholder[data-editor-selected]").forEach(box => box.removeAttribute("data-editor-selected"));
     doc.querySelectorAll("img[data-editor-selected]").forEach(img => img.removeAttribute("data-editor-selected"));
+    selectedBlock = event.target.closest ? event.target.closest(".card,.note,.support-box,.photo-note,.home-accessibility,.timeline div") : null;
+    if (selectedBlock) selectedBlock.setAttribute("data-editor-block-selected", "true");
+    selectedPhotoBox = event.target.closest ? event.target.closest(".photo-placeholder") : null;
     selectedImage = event.target && event.target.tagName === "IMG" ? event.target : null;
     if (selectedImage) {
       selectedImage.setAttribute("data-editor-selected", "true");
+      selectedPhotoBox = selectedImage.closest ? selectedImage.closest(".photo-placeholder") : null;
       status("Photo selected. Drag or choose a new photo to replace it.");
+    } else if (selectedPhotoBox) {
+      selectedPhotoBox.setAttribute("data-editor-selected", "true");
+      status("Photo box selected. Drag or choose a photo to fill it.");
     } else {
       status("Editing " + currentFile + ". Remember to save.");
     }
@@ -278,9 +468,48 @@ function setupEditableFrame() {
     event.preventDefault();
     dropZone.classList.add("ready");
   });
+  doc.addEventListener("dragstart", event => {
+    if (event.target && event.target.tagName === "IMG") {
+      draggedEditorPhoto = {
+        src: event.target.getAttribute("src"),
+        alt: event.target.getAttribute("alt") || "Museum photo",
+        fromImage: event.target,
+        fromBox: event.target.closest ? event.target.closest(".photo-placeholder") : null
+      };
+      event.dataTransfer.setData("text/plain", "editor-photo");
+      status("Drag this photo onto another photo or photo box to move it.");
+    }
+  });
   doc.addEventListener("drop", async event => {
     event.preventDefault();
     dropZone.classList.remove("ready");
+    const targetBox = event.target.closest ? event.target.closest(".photo-placeholder") : null;
+    const targetImage = event.target && event.target.tagName === "IMG" ? event.target : null;
+    if (draggedEditorPhoto && targetImage && targetImage !== draggedEditorPhoto.fromImage && !event.dataTransfer.files.length) {
+      const oldTargetSrc = targetImage.getAttribute("src");
+      const oldTargetAlt = targetImage.getAttribute("alt") || "Museum photo";
+      targetImage.setAttribute("src", draggedEditorPhoto.src);
+      targetImage.setAttribute("alt", draggedEditorPhoto.alt);
+      if (draggedEditorPhoto.fromImage) {
+        draggedEditorPhoto.fromImage.setAttribute("src", oldTargetSrc);
+        draggedEditorPhoto.fromImage.setAttribute("alt", oldTargetAlt);
+      }
+      draggedEditorPhoto = null;
+      setDirty(true);
+      status("Photos swapped. Save when ready.");
+      return;
+    }
+    if (draggedEditorPhoto && targetBox && !event.dataTransfer.files.length) {
+      fillPhotoBox(targetBox, draggedEditorPhoto.src, draggedEditorPhoto.alt);
+      if (draggedEditorPhoto.fromBox && draggedEditorPhoto.fromBox !== targetBox) {
+        resetPhotoBox(draggedEditorPhoto.fromBox);
+      }
+      draggedEditorPhoto = null;
+      setDirty(true);
+      status("Photo moved. Save when ready.");
+      return;
+    }
+    selectedPhotoBox = targetBox || selectedPhotoBox;
     await handleFiles(event.dataTransfer.files);
   });
 }
@@ -299,6 +528,43 @@ document.querySelectorAll("[data-cmd]").forEach(button => {
   button.addEventListener("click", () => exec(button.dataset.cmd));
 });
 
+function selectedCropImage() {
+  if (selectedImage) return selectedImage;
+  if (selectedPhotoBox) return selectedPhotoBox.querySelector("img");
+  return null;
+}
+
+function cropPhoto(direction) {
+  const img = selectedCropImage();
+  if (!img) {
+    status("Click a photo first, then use the photo crop buttons.");
+    return;
+  }
+
+  const current = img.style.objectPosition || "50% 50%";
+  const parts = current.split(/\s+/);
+  let x = Number.parseFloat(parts[0]) || 50;
+  let y = Number.parseFloat(parts[1]) || 50;
+
+  if (direction === "left") x = Math.max(0, x - 10);
+  if (direction === "right") x = Math.min(100, x + 10);
+  if (direction === "up") y = Math.max(0, y - 10);
+  if (direction === "down") y = Math.min(100, y + 10);
+  if (direction === "center") {
+    x = 50;
+    y = 50;
+  }
+
+  img.style.objectFit = "cover";
+  img.style.objectPosition = `${x}% ${y}%`;
+  setDirty(true);
+  status(`Photo crop set to ${Math.round(x)}% across, ${Math.round(y)}% down. Save when ready.`);
+}
+
+document.querySelectorAll("[data-crop]").forEach(button => {
+  button.addEventListener("click", () => cropPhoto(button.dataset.crop));
+});
+
 document.getElementById("heading").onclick = () => exec("formatBlock", "h2");
 document.getElementById("paragraph").onclick = () => exec("formatBlock", "p");
 document.getElementById("link").onclick = () => {
@@ -306,9 +572,207 @@ document.getElementById("link").onclick = () => {
   if (href) exec("createLink", href);
 };
 
+function cardsArea(doc) {
+  let area = doc.querySelector("section.cards");
+  if (area) return area;
+
+  area = doc.createElement("section");
+  area.className = "cards";
+  const footer = doc.querySelector("footer");
+  if (footer && footer.parentNode) {
+    footer.parentNode.insertBefore(area, footer);
+  } else {
+    doc.body.appendChild(area);
+  }
+  return area;
+}
+
+function insertBeforeFooter(doc, node) {
+  const footer = doc.querySelector("footer");
+  if (footer && footer.parentNode) {
+    footer.parentNode.insertBefore(node, footer);
+  } else {
+    doc.body.appendChild(node);
+  }
+}
+
+function contentArea(doc) {
+  let area = doc.querySelector("section.content");
+  if (area) return area;
+
+  area = doc.createElement("section");
+  area.className = "content";
+  insertBeforeFooter(doc, area);
+  return area;
+}
+
+function addContentBox(withPhoto) {
+  const doc = editableDoc();
+  if (!doc) return;
+
+  const card = makeCard(doc, withPhoto);
+  cardsArea(doc).appendChild(card);
+  setDirty(true);
+  status(withPhoto ? "Photo box added. Click the words or drag a photo into the photo box." : "Text box added. Click the words to edit.");
+}
+
+function makeCard(doc, withPhoto, title = "New section title", text = "Add your text here.") {
+  const card = doc.createElement("div");
+  card.className = "card";
+  if (withPhoto) {
+    const photo = doc.createElement("div");
+    photo.className = "photo-placeholder";
+    photo.textContent = "Photo to add";
+    card.appendChild(photo);
+  }
+
+  const heading = doc.createElement("h3");
+  heading.textContent = title;
+  const paragraph = doc.createElement("p");
+  paragraph.textContent = text;
+  card.appendChild(heading);
+  card.appendChild(paragraph);
+  return card;
+}
+
+function addTemplate() {
+  const doc = editableDoc();
+  if (!doc) return;
+  const choice = templateChoice.value;
+
+  if (choice === "text-section") {
+    const section = doc.createElement("section");
+    section.className = "content";
+    section.innerHTML = "<h2>New Section</h2><p>Add your text here.</p>";
+    insertBeforeFooter(doc, section);
+  }
+
+  if (choice === "photo-card") {
+    cardsArea(doc).appendChild(makeCard(doc, true));
+  }
+
+  if (choice === "three-cards") {
+    const section = doc.createElement("section");
+    section.className = "cards";
+    section.appendChild(makeCard(doc, true, "First section", "Add your text here."));
+    section.appendChild(makeCard(doc, true, "Second section", "Add your text here."));
+    section.appendChild(makeCard(doc, true, "Third section", "Add your text here."));
+    insertBeforeFooter(doc, section);
+  }
+
+  if (choice === "note") {
+    const note = doc.createElement("div");
+    note.className = "note";
+    note.innerHTML = "<h3>Information note</h3><p>Add helpful visitor information here.</p>";
+    contentArea(doc).appendChild(note);
+  }
+
+  if (choice === "timeline") {
+    let timeline = doc.querySelector("section.timeline");
+    if (!timeline) {
+      timeline = doc.createElement("section");
+      timeline.className = "timeline";
+      timeline.innerHTML = "<h2>Timeline</h2>";
+      insertBeforeFooter(doc, timeline);
+    }
+    const item = doc.createElement("div");
+    item.innerHTML = "<h3>Year</h3><p>Add timeline text here.</p>";
+    timeline.appendChild(item);
+  }
+
+  if (choice === "support") {
+    const section = doc.createElement("section");
+    section.className = "support-box";
+    section.innerHTML = "<h2>New Callout</h2><p>Add a short message here.</p>";
+    insertBeforeFooter(doc, section);
+  }
+
+  setDirty(true);
+  status("Template added. Click the words or photo box to edit.");
+}
+
+function applyTone() {
+  if (!selectedBlock) {
+    status("Click a box, note, timeline item, or callout first.");
+    return;
+  }
+  selectedBlock.classList.remove("tone-white", "tone-sand", "tone-mist", "tone-blue", "tone-red-accent");
+  if (toneChoice.value) selectedBlock.classList.add(toneChoice.value);
+  setDirty(true);
+  status("Color applied. Save when ready.");
+}
+
+function deleteSelectedBox() {
+  if (!selectedBlock) {
+    status("Click the box you want to delete first.");
+    return;
+  }
+  const ok = confirm("Delete the selected box from this page?");
+  if (!ok) return;
+  selectedBlock.remove();
+  selectedBlock = null;
+  selectedImage = null;
+  selectedPhotoBox = null;
+  setDirty(true);
+  status("Box deleted. Save when ready.");
+}
+
+document.getElementById("addTextBox").onclick = () => addContentBox(false);
+document.getElementById("addPhotoBox").onclick = () => addContentBox(true);
+document.getElementById("addTemplate").onclick = addTemplate;
+document.getElementById("applyTone").onclick = applyTone;
+document.getElementById("deleteBox").onclick = deleteSelectedBox;
+
+document.getElementById("deletePage").onclick = async () => {
+  if (!currentFile) return status("Choose a page first.");
+  if (currentFile === "index.html") return status("The homepage cannot be deleted.");
+  const pageName = currentFile;
+  const ok = confirm(`Delete ${pageName}? A backup will be saved first.`);
+  if (!ok) return;
+  await api("/api/delete-page", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ file: pageName })
+  });
+  currentFile = "";
+  selectedImage = null;
+  selectedPhotoBox = null;
+  lastRange = null;
+  status(`${pageName} deleted.`);
+  await loadPages("index.html");
+};
+
+function fillPhotoBox(box, src, altText) {
+  if (!box) return false;
+  box.innerHTML = "";
+  const doc = editableDoc();
+  const img = doc.createElement("img");
+  img.src = src;
+  img.alt = altText || "Museum photo";
+  img.loading = "lazy";
+  img.style.objectFit = "cover";
+  img.style.objectPosition = "50% 50%";
+  box.appendChild(img);
+  selectedImage = img;
+  selectedPhotoBox = box;
+  return true;
+}
+
+function resetPhotoBox(box) {
+  if (!box) return;
+  box.innerHTML = "Photo to add";
+}
+
 function placeImage(src, altText) {
   const doc = editableDoc();
   if (!doc) return;
+
+  if (selectedPhotoBox) {
+    fillPhotoBox(selectedPhotoBox, src, altText);
+    setDirty(true);
+    status("Photo placed in the box. Save when ready.");
+    return;
+  }
 
   if (selectedImage) {
     selectedImage.setAttribute("src", src);
@@ -322,6 +786,8 @@ function placeImage(src, altText) {
   img.src = src;
   img.alt = altText || "Museum photo";
   img.loading = "lazy";
+  img.style.objectFit = "cover";
+  img.style.objectPosition = "50% 50%";
 
   const paragraph = doc.createElement("p");
   paragraph.appendChild(img);
@@ -407,6 +873,17 @@ document.getElementById("library").onclick = async () => {
   await loadImageLibrary();
 };
 document.getElementById("closeLibrary").onclick = () => imageDrawer.classList.remove("open");
+
+function openHelp() {
+  helpModal.classList.add("open");
+}
+
+document.getElementById("helpButton").onclick = openHelp;
+document.getElementById("helpButtonTop").onclick = openHelp;
+document.getElementById("closeHelp").onclick = () => helpModal.classList.remove("open");
+helpModal.addEventListener("click", event => {
+  if (event.target === helpModal) helpModal.classList.remove("open");
+});
 
 document.getElementById("save").onclick = async () => {
   if (!currentFile) return;

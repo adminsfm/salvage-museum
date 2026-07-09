@@ -159,8 +159,15 @@ function parseMultipart(buffer, contentType) {
 }
 
 function listPages() {
+  const hiddenPages = new Set([
+    "staff-editor.html",
+    "gallery.html",
+    "products.html"
+  ]);
+
   return fs.readdirSync(ROOT)
     .filter(file => file.endsWith(".html"))
+    .filter(file => !hiddenPages.has(file))
     .sort((a, b) => (a === "index.html" ? -1 : b === "index.html" ? 1 : a.localeCompare(b)))
     .map(file => {
       const html = fs.readFileSync(path.join(ROOT, file), "utf8");
@@ -227,6 +234,26 @@ async function handleApi(req, res, url) {
 
     fs.writeFileSync(pagePath(filename), newPageTemplate(title));
     return json(res, 200, { file: filename });
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/delete-page") {
+    const body = JSON.parse((await readRequest(req)).toString("utf8"));
+    const filename = path.basename(String(body.file || ""));
+    const protectedPages = new Set([
+      "index.html",
+      "staff-editor.html",
+      "products.html",
+      "gallery.html"
+    ]);
+
+    if (!filename.endsWith(".html")) return json(res, 400, { error: "Only website pages can be deleted." });
+    if (protectedPages.has(filename)) return json(res, 400, { error: "That page is protected and cannot be deleted here." });
+
+    const target = pagePath(filename);
+    if (!fs.existsSync(target)) return json(res, 404, { error: "Page not found." });
+    backup(target, fs.readFileSync(target, "utf8"));
+    fs.unlinkSync(target);
+    return json(res, 200, { ok: true });
   }
 
   if (req.method === "POST" && url.pathname === "/api/upload-image") {

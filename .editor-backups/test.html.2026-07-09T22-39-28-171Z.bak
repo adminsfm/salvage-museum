@@ -3,18 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gallery | Salvage Fisherman's Museum</title>
-<meta name="description" content="A future gallery for photographs of the Salvage Fisherman's Museum, exhibits, artifacts, harbour, craft, and community.">
+<title>test | Salvage Fisherman's Museum</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 <header>
 <div class="logo">
 <h1>Salvage Fisherman's Museum</h1>
-<p>Gallery</p>
+<p>test</p>
 </div>
-
 <nav>
 <a href="index.html">Home</a>
 <a href="history.html">History</a>
@@ -26,29 +23,14 @@
 <a href="contact.html">Contact</a>
 </nav>
 </header>
-
 <section class="page-header">
-<h2>Gallery</h2>
-<p>Photographs from the museum and community can be added here.</p>
+<h2>test</h2>
+<p>Add a short introduction here.</p>
 </section>
-
-<section class="cards">
-<div class="card">
-<h3>Museum House</h3>
-<p>Add photos of the Lane/Heffern House, lobby, and original rooms.</p>
-</div>
-
-<div class="card">
-<h3>Exhibits</h3>
-<p>Add photos of the Crystal Stream, household objects, textiles, craft displays, radio, and upstairs exhibits.</p>
-</div>
-
-<div class="card">
-<h3>Salvage Community</h3>
-<p>Add harbour, fishing stage, trail, storyboard, and community event photos.</p>
-</div>
+<section class="content">
+<h2>New Section</h2>
+<p>Start writing your page content here.</p>
 </section>
-
 <footer>
 <p>Salvage Fisherman's Museum</p>
 <p>52 Mountainview Rd, Salvage, NL, A0G 0J2</p>

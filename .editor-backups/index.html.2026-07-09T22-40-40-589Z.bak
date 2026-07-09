@@ -47,7 +47,7 @@
 <section class="hero">
 <div class="hero-text">
 <h2>The Story of Salvage</h2>
-<p>Step inside the Lane/Heffern House and explore Salvage through fishing heritage, family histories, craft, technology and artifacts of everyday life.</p>
+<p>Step inside the Lane/Heffern House and explore Salvage through fishing heritage, family histories, schooners, textiles, craft, technology and everyday life.</p>
 
 <div class="buttons">
 <a class="button" href="#visitor-info">Plan Your Visit</a>
@@ -71,7 +71,7 @@
 
 <section class="home-accessibility">
 <h2>Accessibility Note</h2>
-<p>The museum is located atop a steep grassy trail that is not wheelchair accessible. The upstairs rooms are reached by narrow stairs with short treads, and some visitors may not be able to access the second floor. Please ask staff for assistance or for information about the exhibits upstairs.</p>
+<p>The museum is located atop a grassy trail in a historic house and is not wheelchair accessible. The upstairs rooms are reached by narrow stairs with short treads, and some visitors may not be able to access the second floor. Please ask staff for assistance or for information about the exhibits upstairs.</p>
 </section>
 
 
@@ -83,10 +83,10 @@
 <p>Walk through an 1860s home that became one of Newfoundland and Labrador's oldest community museums.</p>
 </div>
 
-<div class="card" data-editor-block-selected="true">
+<div class="card">
 <img src="images/fishing-stages-placeholder.webp" alt="Fishing stages on the harbour in Salvage">
 <h3>The Fishery</h3>
-<p>Learn how cod, water travel, and harbour work shaped family and community life.</p>
+<p>Learn how cod, schooners, and harbour work shaped family and community life.</p>
 </div>
 
 <div class="card">

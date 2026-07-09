@@ -63,7 +63,6 @@ function backup(file, content) {
 function commonNav() {
   return `<nav>
 <a href="index.html">Home</a>
-<a href="visit.html">Visit</a>
 <a href="history.html">History</a>
 <a href="exhibits.html">Exhibits</a>
 <a href="collection.html">Collection</a>
@@ -102,6 +101,8 @@ ${commonNav()}
 </section>
 <footer>
 <p>Salvage Fisherman's Museum</p>
+<p>52 Mountainview Rd, Salvage, NL, A0G 0J2</p>
+<p><a href="mailto:salvagefishermansmuseum@gmail.com">salvagefishermansmuseum@gmail.com</a></p>
 </footer>
 </body>
 </html>`;

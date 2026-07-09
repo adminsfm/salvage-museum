@@ -1,0 +1,63 @@
+USING THE MUSEUM WEBSITE EDITOR ON A WINDOWS PC
+
+Why the old starter did not work
+--------------------------------
+START-EDITOR.command is for Mac computers only.
+On a Windows PC, staff should use:
+
+START-EDITOR-WINDOWS.bat
+
+
+What needs to be in the website folder
+--------------------------------------
+The museum website folder on the PC should include these files:
+
+START-EDITOR-WINDOWS.bat
+museum-editor-server.js
+staff-editor.html
+STAFF-GUIDE.txt
+
+It should also include the normal website files:
+
+index.html
+visit.html
+history.html
+exhibits.html
+collection.html
+discover.html
+gift-shop.html
+support.html
+contact.html
+css/
+images/
+js/
+
+
+One-time setup on the Windows PC
+--------------------------------
+Install Node.js LTS from:
+
+https://nodejs.org/
+
+Node.js is what lets the local editor run on the staff computer.
+
+
+How staff open the editor
+-------------------------
+1. Open the museum website folder.
+2. Double-click START-EDITOR-WINDOWS.bat.
+3. A black window will open. Leave it open while editing.
+4. The browser should open automatically.
+5. If it does not, go to:
+
+http://localhost:4173/editor
+
+6. Edit the website.
+7. Click Save changes.
+8. When finished, close the black window.
+
+
+Important
+---------
+localhost only works while START-EDITOR-WINDOWS.bat is running.
+If the black window is closed, localhost will not show the editor.

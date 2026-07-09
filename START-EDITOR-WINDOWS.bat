@@ -1,8 +1,12 @@
 @echo off
+setlocal
 title Salvage Fisherman's Museum Website Editor
+
 cd /d "%~dp0"
 
 echo Starting the Salvage Fisherman's Museum website editor...
+echo Website folder:
+echo %CD%
 echo.
 echo If the browser does not open, go to:
 echo http://localhost:4173/editor
@@ -20,6 +24,13 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
+
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":4173" ^| findstr "LISTENING"') do (
+  echo Closing old editor process %%a...
+  taskkill /PID %%a /F >nul 2>nul
+)
+
+timeout /t 1 /nobreak >nul
 
 start "" "http://localhost:4173/editor"
 node museum-editor-server.js

@@ -14,16 +14,19 @@ const header =
 document.querySelector("header");
 
 
-if(nav && window.innerWidth < 700){
+if(nav && header){
 
 
 let button =
 document.createElement("button");
 
 
-button.innerHTML="☰ Menu";
+button.innerHTML="Menu";
 
 button.className="menu-button";
+button.setAttribute("type", "button");
+button.setAttribute("aria-label", "Open website menu");
+button.setAttribute("aria-expanded", "false");
 
 
 header.insertBefore(button, nav);
@@ -35,6 +38,7 @@ button.addEventListener(
 function(){
 
 nav.classList.toggle("open");
+button.setAttribute("aria-expanded", nav.classList.contains("open") ? "true" : "false");
 
 });
 
@@ -78,7 +82,7 @@ today.getFullYear(),
 if(today >= open && today <= close){
 
 seasonBox.innerHTML =
-"Open for the season — July 7 to September 4";
+"Open for the season - July 7 to September 4";
 
 
 }

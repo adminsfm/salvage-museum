@@ -709,8 +709,11 @@ button:focus {
 
   nav.open {
     display: grid;
+    grid-template-columns: 1fr;
     gap: 0;
+    justify-content: stretch;
     justify-items: stretch;
+    align-items: stretch;
   }
 
   nav a {

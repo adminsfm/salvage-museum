@@ -1,4 +1,5 @@
 @echo off
+<<<<<<< Updated upstream
 setlocal
 title Salvage Fisherman's Museum Website Editor
 
@@ -7,6 +8,12 @@ cd /d "%~dp0"
 echo Starting the Salvage Fisherman's Museum website editor...
 echo Website folder:
 echo %CD%
+=======
+title Salvage Fisherman's Museum Website Editor
+cd /d "%~dp0"
+
+echo Starting the Salvage Fisherman's Museum website editor...
+>>>>>>> Stashed changes
 echo.
 echo If the browser does not open, go to:
 echo http://localhost:4173/editor
@@ -25,6 +32,7 @@ if errorlevel 1 (
   exit /b 1
 )
 
+<<<<<<< Updated upstream
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":4173" ^| findstr "LISTENING"') do (
   echo Closing old editor process %%a...
   taskkill /PID %%a /F >nul 2>nul
@@ -32,6 +40,8 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":4173" ^| findstr "LISTENING
 
 timeout /t 1 /nobreak >nul
 
+=======
+>>>>>>> Stashed changes
 start "" "http://localhost:4173/editor"
 node museum-editor-server.js
 

@@ -78,7 +78,7 @@ echo If the browser does not open automatically, copy this into the browser:
 echo http://localhost:4173/editor
 echo.
 
-start "" cmd /c "timeout /t 2 /nobreak >nul && start "" "http://localhost:4173/editor""
+start "" powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 2; Start-Process 'http://localhost:4173/editor'"
 node museum-editor-server.js
 
 echo.

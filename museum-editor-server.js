@@ -164,11 +164,25 @@ function listPages() {
     "gallery.html",
     "products.html"
   ]);
+  const navOrder = [
+    "index.html",
+    "history.html",
+    "exhibits.html",
+    "collection.html",
+    "discover.html",
+    "gift-shop.html",
+    "support.html",
+    "contact.html"
+  ];
+  const orderValue = file => {
+    const index = navOrder.indexOf(file);
+    return index === -1 ? 1000 : index;
+  };
 
   return fs.readdirSync(ROOT)
     .filter(file => file.endsWith(".html"))
     .filter(file => !hiddenPages.has(file))
-    .sort((a, b) => (a === "index.html" ? -1 : b === "index.html" ? 1 : a.localeCompare(b)))
+    .sort((a, b) => orderValue(a) - orderValue(b) || a.localeCompare(b))
     .map(file => {
       const html = fs.readFileSync(path.join(ROOT, file), "utf8");
       return { file, title: titleFromHtml(html, file) };

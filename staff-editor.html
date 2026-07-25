@@ -21,6 +21,8 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-
 button,input,textarea{font:inherit}
 button{cursor:pointer}
 .app{display:grid;grid-template-columns:340px 1fr;height:100vh;min-height:0;overflow:hidden}
+.app.sidebar-closed{grid-template-columns:0 1fr}
+.app.sidebar-closed .sidebar{padding:0;border-right:0;overflow:hidden}
 .sidebar{background:var(--panel);border-right:1px solid var(--line);padding:22px;display:flex;flex-direction:column;gap:20px;height:100vh;overflow:auto}
 .brand h1{font-size:1.45rem;margin:0 0 8px;color:var(--blue)}
 .brand p,.help,.status{color:var(--muted);line-height:1.45;margin:0}
@@ -34,6 +36,8 @@ button{cursor:pointer}
 input,textarea,select{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff;width:100%}
 .main{display:flex;flex-direction:column;min-width:0;min-height:0;height:100vh;overflow:hidden}
 .topbar{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;background:#fff;border-bottom:1px solid var(--line);padding:8px 12px;overflow-x:auto;overflow-y:hidden;flex:0 0 auto}
+.tool-group{display:flex;gap:6px;align-items:center;padding-right:8px;border-right:1px solid var(--line);flex:0 0 auto}
+.tool-group:last-of-type{border-right:0}
 .tool{border:1px solid var(--line);background:#fff;border-radius:8px;min-height:38px;padding:8px 12px;color:var(--ink);white-space:nowrap;flex:0 0 auto}
 .tool.primary{background:var(--blue);border-color:var(--blue);color:white;font-weight:bold}
 .tool.good{background:var(--green);border-color:var(--green);color:white;font-weight:bold}
@@ -45,6 +49,22 @@ input,textarea,select{border:1px solid var(--line);border-radius:8px;padding:12p
 .drop-zone{border:2px dashed #9fb3c1;border-radius:8px;background:#fff;padding:8px 14px;text-align:center;color:var(--blue-dark);font-weight:bold;flex:0 0 auto}
 .drop-zone.ready{border-color:var(--green);background:#eef8f3}
 .drop-zone small{display:block;color:var(--muted);font-weight:normal;margin-top:3px}
+.photo-tools{display:none;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 8px 20px rgba(20,34,42,.07);flex:0 0 auto}
+.photo-tools.open{display:flex}
+.photo-tools strong{color:var(--blue-dark);margin-right:2px}
+.photo-control{display:flex;align-items:center;gap:7px;min-width:190px}
+.photo-control label{font-size:.88rem;color:var(--muted);min-width:52px}
+.zoom-control{min-width:min(360px,100%);flex:1 1 300px}
+.zoom-bar{display:grid;grid-template-columns:34px minmax(140px,1fr) 34px;align-items:center;gap:8px;width:100%}
+.zoom-button{width:34px;height:34px;min-height:34px;padding:0;border-radius:50%;font-size:1.15rem;font-weight:800;line-height:1}
+.zoom-slider{appearance:none;-webkit-appearance:none;width:100%;height:14px;padding:0!important;border:0!important;border-radius:999px;background:linear-gradient(90deg,var(--blue-dark),var(--blue));outline:none}
+.zoom-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:var(--gold);border:5px solid #ffd21f;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer}
+.zoom-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);border:5px solid #ffd21f;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer}
+.zoom-slider::-moz-range-track{height:14px;border-radius:999px;background:linear-gradient(90deg,var(--blue-dark),var(--blue))}
+.filter-toggle.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:bold}
+.hint-chip{font-size:.88rem;color:var(--muted)}
+.error-box{display:none;background:#fff3f1;border:1px solid rgba(139,58,53,.35);border-left:6px solid var(--red);color:var(--red);border-radius:8px;padding:10px 12px;line-height:1.35;flex:0 0 auto}
+.error-box.open{display:block}
 .frame-wrap{min-height:0;position:relative;flex:1 1 auto;display:flex}
 iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
 .image-drawer{position:fixed;right:18px;bottom:18px;width:min(420px,calc(100vw - 36px));max-height:70vh;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 18px 60px rgba(0,0,0,.22);padding:16px;display:none;overflow:auto;z-index:5}
@@ -162,31 +182,53 @@ iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;bac
 
   <main class="main">
     <div class="topbar">
-      <button class="tool primary" id="save">Save changes</button>
-      <button class="tool" data-cmd="bold"><strong>Bold</strong></button>
-      <button class="tool" data-cmd="italic"><em>Italic</em></button>
-      <button class="tool" id="heading">Make heading</button>
-      <button class="tool" id="paragraph">Normal text</button>
-      <button class="tool" id="link">Add link</button>
-      <button class="tool" id="addTextBox">Add text box</button>
-      <button class="tool" id="addPhotoBox">Add photo box</button>
-      <button class="tool" id="image">Choose photo</button>
-      <button class="tool" id="library">Photo library</button>
-      <button class="tool" data-crop="left">Photo left</button>
-      <button class="tool" data-crop="center">Center photo</button>
-      <button class="tool" data-crop="right">Photo right</button>
-      <button class="tool" data-crop="up">Photo up</button>
-      <button class="tool" data-crop="down">Photo down</button>
-      <button class="tool" id="helpButtonTop">Help</button>
-      <button class="tool" id="viewSite">Open page</button>
+      <div class="tool-group">
+        <button class="tool" id="sidebarToggle" type="button">Hide sidebar</button>
+        <button class="tool primary" id="save">Save changes</button>
+      </div>
+      <div class="tool-group">
+        <button class="tool" data-cmd="bold"><strong>Bold</strong></button>
+        <button class="tool" data-cmd="italic"><em>Italic</em></button>
+        <button class="tool" id="heading">Heading</button>
+        <button class="tool" id="paragraph">Normal text</button>
+        <button class="tool" id="link">Link</button>
+      </div>
+      <div class="tool-group">
+        <button class="tool" id="addTextBox">Add text box</button>
+        <button class="tool" id="addPhotoBox">Add photo box</button>
+        <button class="tool" id="image">Choose photo</button>
+        <button class="tool" id="library">Photo library</button>
+      </div>
+      <div class="tool-group">
+        <button class="tool" id="helpButtonTop">Help</button>
+        <button class="tool" id="viewSite">Open page</button>
+      </div>
       <span id="saveState" class="save-state">No changes yet</span>
-      <input id="imageFile" type="file" accept="image/*" multiple hidden>
+      <input id="imageFile" type="file" accept="image/*,.heic,.heif,.tif,.tiff,.bmp" multiple hidden>
     </div>
 
     <div class="workarea">
+      <div id="photoTools" class="photo-tools">
+        <strong>Selected photo</strong>
+        <span class="hint-chip">Drag on the photo to move the crop.</span>
+        <div class="photo-control zoom-control">
+          <label for="zoomRange">Zoom</label>
+          <div class="zoom-bar">
+            <button class="tool zoom-button" id="zoomMinus" type="button" aria-label="Zoom out">-</button>
+            <input id="zoomRange" class="zoom-slider" type="range" min="100" max="220" step="5" value="100" aria-label="Photo zoom">
+            <button class="tool zoom-button" id="zoomPlus" type="button" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+        <div class="photo-control">
+          <label>B&amp;W</label>
+          <button class="tool filter-toggle" id="bwToggle" type="button" aria-pressed="false">Off</button>
+        </div>
+        <button class="tool" id="resetPhoto" type="button">Reset crop</button>
+      </div>
+      <div id="errorBox" class="error-box" role="alert"></div>
       <div id="dropZone" class="drop-zone">
         Drag photos here to add them to the selected page
-        <small>Tip: click a spot in the page first. If you click an existing photo, the new photo will replace it.</small>
+        <small>Accepted: JPG, PNG, WebP, GIF, BMP, TIFF, and many phone photos. Large photos are converted for the website.</small>
       </div>
       <div class="frame-wrap">
         <iframe id="preview" title="Editable website page preview"></iframe>
@@ -281,7 +323,7 @@ iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;bac
           </div>
         </div>
         <h3>Add and crop photos</h3>
-        <p>Click a photo box, then choose or drag a photo. Use Photo up/down/left/right to adjust the crop.</p>
+        <p>Click a photo box, then choose or drag a photo. Click the photo and drag directly on it to adjust the crop.</p>
       </div>
 
       <div class="guide-card">
@@ -322,8 +364,10 @@ let selectedImage = null;
 let selectedPhotoBox = null;
 let selectedBlock = null;
 let draggedEditorPhoto = null;
+let cropDrag = null;
 let dirty = false;
 
+const appEl = document.querySelector(".app");
 const pagesEl = document.getElementById("pages");
 const frame = document.getElementById("preview");
 const statusEl = document.getElementById("status");
@@ -335,9 +379,47 @@ const imageGrid = document.getElementById("imageGrid");
 const templateChoice = document.getElementById("templateChoice");
 const toneChoice = document.getElementById("toneChoice");
 const helpModal = document.getElementById("helpModal");
+const photoTools = document.getElementById("photoTools");
+const zoomRange = document.getElementById("zoomRange");
+const bwToggle = document.getElementById("bwToggle");
+const errorBox = document.getElementById("errorBox");
 
 function status(message) {
   statusEl.textContent = message;
+}
+
+function showError(message) {
+  const text = message || "Something went wrong. Please take a screenshot and ask for help.";
+  errorBox.textContent = text;
+  errorBox.classList.add("open");
+  status(text);
+}
+
+function clearError() {
+  errorBox.textContent = "";
+  errorBox.classList.remove("open");
+}
+
+function readableError(error) {
+  if (!error) return "Something went wrong. Please take a screenshot and ask for help.";
+  if (typeof error === "string") return error;
+  return error.message || "Something went wrong. Please take a screenshot and ask for help.";
+}
+
+function reportError(error) {
+  console.error(error);
+  showError(readableError(error));
+}
+
+function safeAsync(task) {
+  return async (...args) => {
+    try {
+      clearError();
+      return await task(...args);
+    } catch (error) {
+      reportError(error);
+    }
+  };
 }
 
 function setDirty(value) {
@@ -346,13 +428,28 @@ function setDirty(value) {
   saveStateEl.classList.toggle("dirty", value);
 }
 
+document.getElementById("sidebarToggle").addEventListener("click", () => {
+  appEl.classList.toggle("sidebar-closed");
+  document.getElementById("sidebarToggle").textContent = appEl.classList.contains("sidebar-closed") ? "Show sidebar" : "Hide sidebar";
+});
+
 async function api(url, options) {
   const response = await fetch(url, options);
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text || "Something went wrong.");
+    try {
+      const parsed = JSON.parse(text);
+      throw new Error(parsed.error || text || "Something went wrong.");
+    } catch (error) {
+      if (error.message && error.message !== text) throw error;
+      throw new Error(text || `Request failed with status ${response.status}.`);
+    }
   }
-  return response.json();
+  try {
+    return await response.json();
+  } catch (error) {
+    throw new Error("The editor received an unreadable response. Please restart the editor and try again.");
+  }
 }
 
 async function loadPages(selectFile) {
@@ -363,10 +460,10 @@ async function loadPages(selectFile) {
     button.className = "page-btn" + (page.file === currentFile ? " active" : "");
     button.textContent = page.title || page.file;
     button.title = page.file;
-    button.onclick = () => {
+    button.onclick = safeAsync(async () => {
       if (dirty && !confirm("You have unsaved changes. Open another page anyway?")) return;
-      loadPage(page.file);
-    };
+      await loadPage(page.file);
+    });
     pagesEl.appendChild(button);
   });
   if (!currentFile && pages.length) {
@@ -396,12 +493,79 @@ function cleanForSaving(doc) {
   const clone = doc.documentElement.cloneNode(true);
   clone.querySelectorAll("[data-editor-style]").forEach(node => node.remove());
   clone.querySelectorAll("[data-editor-selected]").forEach(node => node.removeAttribute("data-editor-selected"));
+  clone.querySelectorAll("[data-editor-block-selected]").forEach(node => node.removeAttribute("data-editor-block-selected"));
+  clone.querySelectorAll("[data-crop-x],[data-crop-y],[data-photo-zoom],[data-photo-bw]").forEach(node => {
+    node.removeAttribute("data-crop-x");
+    node.removeAttribute("data-crop-y");
+    node.removeAttribute("data-photo-zoom");
+    node.removeAttribute("data-photo-bw");
+  });
   clone.querySelectorAll("script[data-editor-disabled-src]").forEach(script => {
     script.setAttribute("src", script.getAttribute("data-editor-disabled-src"));
     script.removeAttribute("data-editor-disabled-src");
     if (script.getAttribute("type") === "text/plain") script.removeAttribute("type");
   });
   return "<!DOCTYPE html>\n" + clone.outerHTML;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function selectedCropImage() {
+  if (selectedImage) return selectedImage;
+  if (selectedPhotoBox) return selectedPhotoBox.querySelector("img");
+  return null;
+}
+
+function parsePercentPair(value) {
+  const parts = String(value || "50% 50%").split(/\s+/);
+  return {
+    x: clamp(Number.parseFloat(parts[0]) || 50, 0, 100),
+    y: clamp(Number.parseFloat(parts[1]) || 50, 0, 100)
+  };
+}
+
+function photoZoom(img) {
+  const fromTransform = /scale\(([\d.]+)\)/.exec(img.style.transform || "");
+  const value = Number.parseFloat(img.dataset.photoZoom || (fromTransform ? String(Number.parseFloat(fromTransform[1]) * 100) : "100"));
+  return clamp(Number.isFinite(value) ? value : 100, 100, 220);
+}
+
+function photoBw(img) {
+  const fromFilter = /grayscale\(([\d.]+)%\)/.exec(img.style.filter || "");
+  const value = Number.parseFloat(img.dataset.photoBw || (fromFilter ? fromFilter[1] : "0"));
+  return clamp(Number.isFinite(value) ? value : 0, 0, 100);
+}
+
+function applyPhotoEdits(img, options = {}) {
+  if (!img) return;
+  const current = parsePercentPair(img.style.objectPosition);
+  const x = options.x ?? current.x;
+  const y = options.y ?? current.y;
+  const zoom = options.zoom ?? photoZoom(img);
+  const bw = options.bw ?? photoBw(img);
+
+  img.dataset.cropX = String(Math.round(x));
+  img.dataset.cropY = String(Math.round(y));
+  img.dataset.photoZoom = String(Math.round(zoom));
+  img.dataset.photoBw = String(Math.round(bw));
+  img.style.objectFit = "cover";
+  img.style.objectPosition = `${clamp(x, 0, 100)}% ${clamp(y, 0, 100)}%`;
+  img.style.transform = `scale(${clamp(zoom, 100, 220) / 100})`;
+  img.style.transformOrigin = "center center";
+  img.style.filter = bw > 0 ? `grayscale(${bw}%)` : "";
+}
+
+function refreshPhotoTools() {
+  const img = selectedCropImage();
+  photoTools.classList.toggle("open", !!img);
+  if (!img) return;
+  zoomRange.value = String(photoZoom(img));
+  const isBw = photoBw(img) >= 100;
+  bwToggle.textContent = isBw ? "On" : "Off";
+  bwToggle.classList.toggle("active", isBw);
+  bwToggle.setAttribute("aria-pressed", isBw ? "true" : "false");
 }
 
 function editableDoc() {
@@ -428,7 +592,6 @@ function setupEditableFrame() {
   style.textContent = [
     "body{outline:none!important}",
     "a{cursor:text!important}",
-    ".card>img{display:block!important;width:calc(100% + 52px)!important;max-width:none!important;height:180px!important;object-fit:cover!important;margin:-26px -26px 22px!important}",
     ".photo-placeholder{cursor:pointer!important}",
     ".photo-placeholder img{width:100%!important;height:100%!important;object-fit:cover!important;margin:0!important;border:0!important;display:block!important}",
     ".photo-placeholder[data-editor-selected]{outline:5px solid #27664e!important;outline-offset:3px}",
@@ -437,7 +600,9 @@ function setupEditableFrame() {
     "p:hover,h1:hover,h2:hover,h3:hover,h4:hover,li:hover{outline:3px solid rgba(24,74,107,.25)}",
     "img{max-width:100%;height:auto}",
     "img:hover{outline:4px solid rgba(39,102,78,.45)}",
-    "img[data-editor-selected]{outline:5px solid #27664e!important}"
+    "img[data-editor-selected]{outline:5px solid #27664e!important}",
+    "img[data-editor-selected]{cursor:grab!important;touch-action:none!important}",
+    "img[data-editor-selected]:active{cursor:grabbing!important}"
   ].join("");
   doc.head.appendChild(style);
 
@@ -455,6 +620,7 @@ function setupEditableFrame() {
     if (selectedImage) {
       selectedImage.setAttribute("data-editor-selected", "true");
       selectedPhotoBox = selectedImage.closest ? selectedImage.closest(".photo-placeholder") : null;
+      applyPhotoEdits(selectedImage);
       status("Photo selected. Drag or choose a new photo to replace it.");
     } else if (selectedPhotoBox) {
       selectedPhotoBox.setAttribute("data-editor-selected", "true");
@@ -462,6 +628,38 @@ function setupEditableFrame() {
     } else {
       status("Editing " + currentFile + ". Remember to save.");
     }
+    refreshPhotoTools();
+  });
+
+  doc.addEventListener("pointerdown", event => {
+    const img = event.target && event.target.tagName === "IMG" ? event.target : null;
+    if (!img || img !== selectedCropImage()) return;
+    const point = parsePercentPair(img.style.objectPosition);
+    cropDrag = {
+      img,
+      startX: event.clientX,
+      startY: event.clientY,
+      x: point.x,
+      y: point.y
+    };
+    try { img.setPointerCapture(event.pointerId); } catch {}
+  });
+
+  doc.addEventListener("pointermove", event => {
+    if (!cropDrag) return;
+    event.preventDefault();
+    const box = cropDrag.img.getBoundingClientRect();
+    const x = clamp(cropDrag.x - ((event.clientX - cropDrag.startX) / Math.max(box.width, 1)) * 70, 0, 100);
+    const y = clamp(cropDrag.y - ((event.clientY - cropDrag.startY) / Math.max(box.height, 1)) * 70, 0, 100);
+    applyPhotoEdits(cropDrag.img, { x, y });
+    setDirty(true);
+    status("Photo crop moved. Save when ready.");
+  });
+
+  ["pointerup", "pointercancel"].forEach(type => {
+    doc.addEventListener(type, () => {
+      cropDrag = null;
+    });
   });
 
   doc.addEventListener("dragover", event => {
@@ -481,6 +679,7 @@ function setupEditableFrame() {
     }
   });
   doc.addEventListener("drop", async event => {
+    try {
     event.preventDefault();
     dropZone.classList.remove("ready");
     const targetBox = event.target.closest ? event.target.closest(".photo-placeholder") : null;
@@ -511,6 +710,9 @@ function setupEditableFrame() {
     }
     selectedPhotoBox = targetBox || selectedPhotoBox;
     await handleFiles(event.dataTransfer.files);
+    } catch (error) {
+      reportError(error);
+    }
   });
 }
 
@@ -528,42 +730,38 @@ document.querySelectorAll("[data-cmd]").forEach(button => {
   button.addEventListener("click", () => exec(button.dataset.cmd));
 });
 
-function selectedCropImage() {
-  if (selectedImage) return selectedImage;
-  if (selectedPhotoBox) return selectedPhotoBox.querySelector("img");
-  return null;
+function nudgeRange(input, amount) {
+  input.value = String(clamp(Number(input.value) + amount, Number(input.min), Number(input.max)));
+  input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
-function cropPhoto(direction) {
+zoomRange.addEventListener("input", () => {
   const img = selectedCropImage();
-  if (!img) {
-    status("Click a photo first, then use the photo crop buttons.");
-    return;
-  }
-
-  const current = img.style.objectPosition || "50% 50%";
-  const parts = current.split(/\s+/);
-  let x = Number.parseFloat(parts[0]) || 50;
-  let y = Number.parseFloat(parts[1]) || 50;
-
-  if (direction === "left") x = Math.max(0, x - 10);
-  if (direction === "right") x = Math.min(100, x + 10);
-  if (direction === "up") y = Math.max(0, y - 10);
-  if (direction === "down") y = Math.min(100, y + 10);
-  if (direction === "center") {
-    x = 50;
-    y = 50;
-  }
-
-  img.style.objectFit = "cover";
-  img.style.objectPosition = `${x}% ${y}%`;
+  if (!img) return;
+  applyPhotoEdits(img, { zoom: Number(zoomRange.value) });
   setDirty(true);
-  status(`Photo crop set to ${Math.round(x)}% across, ${Math.round(y)}% down. Save when ready.`);
-}
-
-document.querySelectorAll("[data-crop]").forEach(button => {
-  button.addEventListener("click", () => cropPhoto(button.dataset.crop));
+  status("Photo zoom updated. Save when ready.");
 });
+
+document.getElementById("zoomMinus").onclick = () => nudgeRange(zoomRange, -10);
+document.getElementById("zoomPlus").onclick = () => nudgeRange(zoomRange, 10);
+bwToggle.onclick = () => {
+  const img = selectedCropImage();
+  if (!img) return status("Click a photo first.");
+  const next = photoBw(img) >= 100 ? 0 : 100;
+  applyPhotoEdits(img, { bw: next });
+  refreshPhotoTools();
+  setDirty(true);
+  status(next ? "Black and white filter turned on. Save when ready." : "Black and white filter turned off. Save when ready.");
+};
+document.getElementById("resetPhoto").onclick = () => {
+  const img = selectedCropImage();
+  if (!img) return status("Click a photo first.");
+  applyPhotoEdits(img, { x: 50, y: 50, zoom: 100, bw: 0 });
+  refreshPhotoTools();
+  setDirty(true);
+  status("Photo crop and effects reset. Save when ready.");
+};
 
 document.getElementById("heading").onclick = () => exec("formatBlock", "h2");
 document.getElementById("paragraph").onclick = () => exec("formatBlock", "p");
@@ -723,7 +921,7 @@ document.getElementById("addTemplate").onclick = addTemplate;
 document.getElementById("applyTone").onclick = applyTone;
 document.getElementById("deleteBox").onclick = deleteSelectedBox;
 
-document.getElementById("deletePage").onclick = async () => {
+document.getElementById("deletePage").onclick = safeAsync(async () => {
   if (!currentFile) return status("Choose a page first.");
   if (currentFile === "index.html") return status("The homepage cannot be deleted.");
   const pageName = currentFile;
@@ -740,7 +938,7 @@ document.getElementById("deletePage").onclick = async () => {
   lastRange = null;
   status(`${pageName} deleted.`);
   await loadPages("index.html");
-};
+});
 
 function fillPhotoBox(box, src, altText) {
   if (!box) return false;
@@ -750,11 +948,11 @@ function fillPhotoBox(box, src, altText) {
   img.src = src;
   img.alt = altText || "Museum photo";
   img.loading = "lazy";
-  img.style.objectFit = "cover";
-  img.style.objectPosition = "50% 50%";
+  applyPhotoEdits(img, { x: 50, y: 50, zoom: 100, bw: 0 });
   box.appendChild(img);
   selectedImage = img;
   selectedPhotoBox = box;
+  refreshPhotoTools();
   return true;
 }
 
@@ -777,6 +975,8 @@ function placeImage(src, altText) {
   if (selectedImage) {
     selectedImage.setAttribute("src", src);
     selectedImage.setAttribute("alt", altText || "Museum photo");
+    applyPhotoEdits(selectedImage);
+    refreshPhotoTools();
     setDirty(true);
     status("Photo replaced. Save when ready.");
     return;
@@ -786,8 +986,7 @@ function placeImage(src, altText) {
   img.src = src;
   img.alt = altText || "Museum photo";
   img.loading = "lazy";
-  img.style.objectFit = "cover";
-  img.style.objectPosition = "50% 50%";
+  applyPhotoEdits(img, { x: 50, y: 50, zoom: 100, bw: 0 });
 
   const paragraph = doc.createElement("p");
   paragraph.appendChild(img);
@@ -810,25 +1009,91 @@ function placeImage(src, altText) {
 }
 
 async function uploadOne(file) {
+  const webFile = await prepareImageForWebsite(file);
   const form = new FormData();
-  form.append("image", file);
+  form.append("image", webFile);
   const uploaded = await api("/api/upload-image", { method: "POST", body: form });
   placeImage(uploaded.src, file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "));
 }
 
+function fileExtension(file) {
+  const match = /\.([^.]+)$/.exec(file.name || "");
+  return match ? match[1].toLowerCase() : "";
+}
+
+function isLikelyImage(file) {
+  const ext = fileExtension(file);
+  return file.type.startsWith("image/") || ["jpg","jpeg","png","webp","gif","bmp","tif","tiff","heic","heif"].includes(ext);
+}
+
+function loadBitmapSource(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("This computer/browser cannot read that photo type."));
+    };
+    image.src = url;
+  });
+}
+
+async function prepareImageForWebsite(file) {
+  const ext = fileExtension(file);
+  if (["heic", "heif"].includes(ext)) {
+    status("Trying to convert an iPhone HEIC photo...");
+  }
+
+  let image;
+  try {
+    image = await loadBitmapSource(file);
+  } catch (error) {
+    throw new Error(`Could not read ${file.name}. Please export it as JPG or PNG, then try again.`);
+  }
+
+  const maxSide = 2200;
+  const scale = Math.min(1, maxSide / Math.max(image.naturalWidth || image.width, image.naturalHeight || image.height));
+  const width = Math.max(1, Math.round((image.naturalWidth || image.width) * scale));
+  const height = Math.max(1, Math.round((image.naturalHeight || image.height) * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(image, 0, 0, width, height);
+
+  const outputType = file.type === "image/png" && file.size < 1200000 ? "image/png" : "image/jpeg";
+  const outputExt = outputType === "image/png" ? "png" : "jpg";
+  const baseName = (file.name || "museum-photo").replace(/\.[^.]+$/, "");
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, outputType, 0.86));
+  if (!blob) throw new Error(`Could not convert ${file.name}.`);
+
+  if (blob.size !== file.size || outputExt !== ext) {
+    status(`Converted ${file.name} for the website.`);
+  }
+  return new File([blob], `${baseName}.${outputExt}`, { type: outputType });
+}
+
 async function handleFiles(files) {
-  const images = [...files].filter(file => file.type.startsWith("image/"));
-  if (!images.length) return status("Please drop an image file.");
-  status("Adding photo...");
-  for (const image of images) await uploadOne(image);
-  await loadImageLibrary();
+  const images = [...files].filter(isLikelyImage);
+  if (!images.length) return status("Please choose a photo file. Accepted: JPG, PNG, WebP, GIF, BMP, TIFF, and many phone photos.");
+  status("Checking and converting photo for the website...");
+  try {
+    for (const image of images) await uploadOne(image);
+    await loadImageLibrary();
+  } catch (error) {
+    reportError(error);
+  }
 }
 
 document.getElementById("image").onclick = () => imageFile.click();
-imageFile.onchange = async event => {
+imageFile.onchange = safeAsync(async event => {
   await handleFiles(event.target.files);
   event.target.value = "";
-};
+});
 
 ["dragenter","dragover"].forEach(type => {
   dropZone.addEventListener(type, event => {
@@ -842,7 +1107,7 @@ imageFile.onchange = async event => {
     dropZone.classList.remove("ready");
   });
 });
-dropZone.addEventListener("drop", event => handleFiles(event.dataTransfer.files));
+dropZone.addEventListener("drop", event => safeAsync(() => handleFiles(event.dataTransfer.files))());
 
 async function loadImageLibrary() {
   const images = await api("/api/images");
@@ -868,10 +1133,10 @@ async function loadImageLibrary() {
   });
 }
 
-document.getElementById("library").onclick = async () => {
+document.getElementById("library").onclick = safeAsync(async () => {
   imageDrawer.classList.add("open");
   await loadImageLibrary();
-};
+});
 document.getElementById("closeLibrary").onclick = () => imageDrawer.classList.remove("open");
 
 function openHelp() {
@@ -885,7 +1150,7 @@ helpModal.addEventListener("click", event => {
   if (event.target === helpModal) helpModal.classList.remove("open");
 });
 
-document.getElementById("save").onclick = async () => {
+document.getElementById("save").onclick = safeAsync(async () => {
   if (!currentFile) return;
   const doc = editableDoc();
   const html = cleanForSaving(doc);
@@ -898,9 +1163,9 @@ document.getElementById("save").onclick = async () => {
   setDirty(false);
   status("Saved " + currentFile + ". A backup copy was made automatically.");
   await loadPages(currentFile);
-};
+});
 
-document.getElementById("createPage").onclick = async () => {
+document.getElementById("createPage").onclick = safeAsync(async () => {
   const title = document.getElementById("newTitle").value.trim();
   if (!title) return status("Add a page title first.");
   const page = await api("/api/create-page", {
@@ -911,7 +1176,7 @@ document.getElementById("createPage").onclick = async () => {
   document.getElementById("newTitle").value = "";
   await loadPages(page.file);
   status("New page created. Add text, photos, and save.");
-};
+});
 
 document.getElementById("viewSite").onclick = () => {
   if (currentFile) window.open("/" + currentFile, "_blank");
@@ -920,7 +1185,7 @@ document.getElementById("viewSite").onclick = () => {
 const paymentModal = document.getElementById("paymentModal");
 document.getElementById("paymentButton").onclick = () => paymentModal.classList.add("open");
 document.getElementById("closePayment").onclick = () => paymentModal.classList.remove("open");
-document.getElementById("savePayment").onclick = async () => {
+document.getElementById("savePayment").onclick = safeAsync(async () => {
   const embed = document.getElementById("paymentCode").value.trim();
   if (!embed) return status("Paste the donation code first.");
   await api("/api/payment", {
@@ -931,7 +1196,7 @@ document.getElementById("savePayment").onclick = async () => {
   paymentModal.classList.remove("open");
   status("Donation code saved to support.html");
   await loadPages("support.html");
-};
+});
 
 window.addEventListener("beforeunload", event => {
   if (!dirty) return;
@@ -939,7 +1204,15 @@ window.addEventListener("beforeunload", event => {
   event.returnValue = "";
 });
 
-loadPages().catch(error => status(error.message));
+window.addEventListener("error", event => {
+  reportError(event.error || event.message);
+});
+
+window.addEventListener("unhandledrejection", event => {
+  reportError(event.reason);
+});
+
+safeAsync(() => loadPages())();
 </script>
 </body>
 </html>

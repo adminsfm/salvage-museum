@@ -1186,6 +1186,14 @@ body .info-section.tight-after .info-box h2 {
     --card-photo-height: 190px;
   }
 
+  body.home-page .hero {
+    min-height: auto;
+    padding-top: 56px;
+    padding-bottom: 56px;
+    background-size: cover, cover !important;
+    background-position: center center, center center !important;
+  }
+
   body .page-header h2 {
     font-size: clamp(1.9rem, 10vw, 2.7rem);
   }
@@ -1278,6 +1286,33 @@ body.home-page .timeline.timeline-cards p {
   body.home-page .cards {
     --card-photo-height: 205px;
     width: min(100% - 28px, 760px);
+  }
+}
+
+@media (max-width: 620px) {
+  body .cards:has(> .card:nth-child(3):last-child) > .card:nth-child(3) {
+    grid-column: auto;
+    justify-self: stretch;
+    width: auto;
+  }
+
+  body:not(.home-page) .cards {
+    width: min(100% - 28px, 760px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body:not(.home-page) .card {
+    padding: 22px;
+  }
+
+  body:not(.home-page) .card h3 {
+    font-size: clamp(1.25rem, 7vw, 1.75rem);
+  }
+
+  body:not(.home-page) .card p {
+    font-size: clamp(1rem, 5.5vw, 1.16rem);
+    line-height: 1.48;
   }
 }
 

@@ -108,7 +108,7 @@ seasonBox.innerHTML =
 
 const elements =
 document.querySelectorAll(
-".card,.support-box,.timeline div"
+".page-header,.card,.support-box,.timeline div,.info-box,.short-info-box,.wide-photo"
 );
 
 

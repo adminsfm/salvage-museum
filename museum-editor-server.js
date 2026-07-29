@@ -51,7 +51,12 @@ function slugify(value) {
 
 function titleFromHtml(html, fallback) {
   const match = html.match(/<title>([\s\S]*?)<\/title>/i);
-  return match ? match[1].replace(/\s+/g, " ").trim() : fallback;
+  return match
+    ? match[1]
+        .replace(/\s+/g, " ")
+        .replace(/\s*\|\s*Salvage Fisherman's Museum\s*$/i, "")
+        .trim()
+    : fallback;
 }
 
 function backup(file, content) {
@@ -86,7 +91,7 @@ function newPageTemplate(title) {
 <body>
 <header>
 <div class="logo">
-<h1>Salvage Fisherman's Museum</h1>
+<a class="home-link" href="index.html" aria-label="Go to homepage"><h1>Salvage Fisherman's Museum</h1></a>
 <p>${safeTitle}</p>
 </div>
 ${commonNav()}
@@ -95,15 +100,21 @@ ${commonNav()}
 <h2>${safeTitle}</h2>
 <p>Add a short introduction here.</p>
 </section>
-<section class="content">
+<section class="content info-section tight-after">
+<div class="info-box quiet-box">
 <h2>New Section</h2>
 <p>Start writing your page content here.</p>
+</div>
 </section>
 <footer>
 <p>Salvage Fisherman's Museum</p>
-<p>52 Mountainview Rd, Salvage, NL, A0G 0J2</p>
+<div class="footer-map" aria-label="Map showing Salvage Fisherman's Museum location">
+<iframe title="Map to Salvage Fisherman's Museum" src="https://www.google.com/maps?q=52%20Mountainview%20Rd%2C%20Salvage%2C%20NL%20A0G%203Y0&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+<p>52 Mountainview Rd, Salvage, NL, A0G 3Y0</p>
 <p><a href="mailto:salvagefishermansmuseum@gmail.com">salvagefishermansmuseum@gmail.com</a></p>
 </footer>
+<script src="js/main.js"></script>
 </body>
 </html>`;
 }

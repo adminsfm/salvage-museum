@@ -229,7 +229,6 @@ iframe{width:1200px;min-width:1200px;max-width:none;height:100%;border:0;backgro
         <button class="tool" data-cmd="italic"><em>Italic</em></button>
         <button class="tool" id="heading">Heading</button>
         <button class="tool" id="paragraph">Normal text</button>
-        <button class="tool" id="clearFormatting">Remove formatting</button>
         <button class="tool" id="link">Link</button>
         <button class="tool" id="buttonText">Button text</button>
       </div>
@@ -1293,7 +1292,6 @@ function setupEditableFrame() {
 
   doc.addEventListener("selectionchange", rememberSelection);
   doc.addEventListener("input", () => setDirty(true));
-  doc.addEventListener("paste", handlePlainTextPaste);
   doc.addEventListener("click", event => {
     if (event.target.closest && event.target.closest("a")) event.preventDefault();
   doc.querySelectorAll("[data-editor-block-selected]").forEach(block => block.removeAttribute("data-editor-block-selected"));
@@ -1394,35 +1392,6 @@ function exec(command, value = null) {
   frame.contentWindow.focus();
   doc.execCommand(command, false, value);
   setDirty(true);
-}
-
-function insertPlainText(doc, text) {
-  frame.contentWindow.focus();
-  if (doc.queryCommandSupported && doc.queryCommandSupported("insertText")) {
-    doc.execCommand("insertText", false, text);
-    return;
-  }
-  const selection = doc.getSelection();
-  if (!selection || !selection.rangeCount) return;
-  const range = selection.getRangeAt(0);
-  range.deleteContents();
-  const node = doc.createTextNode(text);
-  range.insertNode(node);
-  range.setStartAfter(node);
-  range.collapse(true);
-  selection.removeAllRanges();
-  selection.addRange(range);
-}
-
-function handlePlainTextPaste(event) {
-  const doc = editableDoc();
-  if (!doc) return;
-  const text = event.clipboardData && event.clipboardData.getData("text/plain");
-  if (!text) return;
-  event.preventDefault();
-  insertPlainText(doc, text);
-  setDirty(true);
-  status("Pasted as plain text. Save when ready.");
 }
 
 document.querySelectorAll("[data-cmd]").forEach(button => {
@@ -1579,11 +1548,6 @@ document.getElementById("photoCredit").onclick = setPhotoCredit;
 
 document.getElementById("heading").onclick = () => exec("formatBlock", "h2");
 document.getElementById("paragraph").onclick = () => exec("formatBlock", "p");
-document.getElementById("clearFormatting").onclick = () => {
-  exec("removeFormat");
-  exec("formatBlock", "p");
-  status("Formatting removed from selected text. Save when ready.");
-};
 document.getElementById("link").onclick = () => {
   const doc = editableDoc();
   if (!doc) return;

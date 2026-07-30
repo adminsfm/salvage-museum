@@ -514,15 +514,19 @@ nav a:hover {
 .photo-credit {
   margin: -10px 0 20px;
   color: var(--muted);
-  font-size: .88rem;
+  font-size: .78rem;
   font-style: italic;
-  line-height: 1.35;
+  line-height: 1.28;
 }
 
 .photo-placeholder + .photo-credit,
 .card .photo-placeholder + .photo-credit {
-  margin-top: -14px;
-  padding: 0 20px;
+  margin: -22px -26px 16px;
+  padding: 6px 10px;
+  text-align: left;
+  background: rgba(238, 243, 241, .92);
+  border-top: 1px solid rgba(31, 37, 40, .1);
+  border-bottom: 1px solid rgba(31, 37, 40, .1);
 }
 
 .background-credit {

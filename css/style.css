@@ -514,17 +514,17 @@ nav a:hover {
 .photo-credit {
   margin: -10px 0 20px;
   color: var(--muted);
-  font-size: .78rem;
+  font-size: 10px;
   font-style: italic;
-  line-height: 1.28;
+  line-height: 1.22;
 }
 
 .photo-placeholder + .photo-credit,
 .card .photo-placeholder + .photo-credit {
-  margin: -22px -26px 16px;
-  padding: 6px 10px;
+  margin: -22px -26px 14px;
+  padding: 4px 7px;
   text-align: left;
-  background: rgba(238, 243, 241, .92);
+  background: rgba(244, 246, 244, .94);
   border-top: 1px solid rgba(31, 37, 40, .1);
   border-bottom: 1px solid rgba(31, 37, 40, .1);
 }
@@ -1349,4 +1349,87 @@ body .history-section .info-box.quiet-box p {
 
 body .history-section .info-box.quiet-box p:last-child {
   margin-bottom: 0 !important;
+}
+
+/* Final photo credit guard.
+   Photo credits are paragraphs inside cards, so later card paragraph rules must not resize them. */
+body p.photo-credit,
+body .card p.photo-credit,
+body.home-page .card p.photo-credit,
+body:not(.home-page) .card p.photo-credit {
+  margin: -10px 0 20px;
+  color: var(--muted);
+  font-size: 10px !important;
+  font-style: italic;
+  line-height: 1.22 !important;
+  text-align: left;
+}
+
+body .photo-placeholder + p.photo-credit,
+body .card .photo-placeholder + p.photo-credit {
+  margin: -22px -26px 14px;
+  padding: 4px 7px;
+  background: rgba(244, 246, 244, .94);
+  border-top: 1px solid rgba(31, 37, 40, .1);
+  border-bottom: 1px solid rgba(31, 37, 40, .1);
+}
+
+/* Photo credits display as a compact info button over the image.
+   The original credit text remains in the HTML so staff can still edit it. */
+.credits-as-info-buttons .photo-placeholder {
+  position: relative;
+}
+
+.credits-as-info-buttons .photo-placeholder + .photo-credit {
+  display: none !important;
+}
+
+.credit-info-button {
+  position: absolute;
+  left: 9px;
+  bottom: 9px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(255, 255, 255, .78);
+  border-radius: 50%;
+  background: rgba(12, 58, 74, .88);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .22);
+  cursor: pointer;
+  font: 700 14px/1 Arial, Helvetica, sans-serif;
+}
+
+.credit-info-button:hover,
+.credit-info-button:focus {
+  background: rgba(12, 58, 74, 1);
+  outline: 2px solid rgba(255, 255, 255, .86);
+  outline-offset: 2px;
+}
+
+.credit-popover {
+  position: absolute;
+  left: 9px;
+  bottom: 40px;
+  z-index: 4;
+  display: none;
+  width: min(260px, calc(100% - 18px));
+  padding: 8px 10px;
+  border: 1px solid rgba(31, 37, 40, .18);
+  border-radius: 5px;
+  background: rgba(250, 249, 244, .98);
+  color: #4f5d62;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.28;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+}
+
+.credit-popover.open {
+  display: block;
 }

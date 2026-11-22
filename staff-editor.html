@@ -71,6 +71,7 @@ input,textarea,select{border:1px solid var(--line);border-radius:8px;padding:12p
 .filter-toggle.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:bold}
 .hint-chip{font-size:.88rem;color:var(--muted)}
 .error-box{display:none;background:#fff3f1;border:1px solid rgba(139,58,53,.35);border-left:6px solid var(--red);color:var(--red);border-radius:8px;padding:10px 12px;line-height:1.35;flex:0 0 auto}
+.error-box.notice{background:#fff8e6;border-color:rgba(166,113,36,.35);border-left-color:#c9963f;color:#6f4c14}
 .error-box.open{display:block}
 .frame-wrap{min-height:0;position:relative;flex:1 1 auto;display:block;overflow:auto;background:#eaf1f3;border:1px solid var(--line);border-radius:8px}
 iframe{width:1200px;min-width:1200px;max-width:none;height:100%;border:0;background:#fff;display:block}
@@ -529,19 +530,36 @@ function status(message) {
 function showError(message) {
   const text = message || "Something went wrong. Please take a screenshot and ask for help.";
   errorBox.textContent = text;
+  errorBox.classList.remove("notice");
   errorBox.classList.add("open");
+  status(text);
+}
+
+function showNotice(message) {
+  const text = message || "The editor has a warning.";
+  errorBox.textContent = text;
+  errorBox.classList.add("notice", "open");
   status(text);
 }
 
 function clearError() {
   errorBox.textContent = "";
-  errorBox.classList.remove("open");
+  errorBox.classList.remove("open", "notice");
 }
 
 function readableError(error) {
   if (!error) return "Something went wrong. Please take a screenshot and ask for help.";
-  if (typeof error === "string") return error;
-  return error.message || "Something went wrong. Please take a screenshot and ask for help.";
+  const raw = typeof error === "string" ? error : error.message || String(error);
+  if (raw.includes("useCache")) {
+    return "Browser cache warning: this can happen after clearing your cache. Editing is still loaded. Refresh this page once. If it keeps happening, close this tab and reopen the Start Editor from GitHub command.";
+  }
+  if (raw.includes("Failed to fetch") || raw.includes("Load failed")) {
+    return "The editor cannot reach the local website editor service. Leave the command window open, then refresh this page. If it still does not work, close this tab and run Start Editor from GitHub again.";
+  }
+  if (raw.includes("Cannot read properties of undefined") || raw.includes("undefined is not an object")) {
+    return "The editor hit a temporary browser problem while reading this page. Refresh this page once. If it repeats, take a screenshot and ask for help before saving.";
+  }
+  return raw || "Something went wrong. Please take a screenshot and ask for help.";
 }
 
 function reportError(error) {
@@ -554,6 +572,12 @@ function reportWindowError(event) {
     return;
   }
   const detail = event.error || event.message;
+  const raw = detail && detail.message ? detail.message : String(detail || "");
+  if (raw.includes("useCache")) {
+    console.warn("Non-blocking browser cache warning:", detail);
+    showNotice(readableError(detail));
+    return;
+  }
   if (detail && event.filename && event.lineno) {
     reportError(`${readableError(detail)} (${event.filename}:${event.lineno})`);
     return;
@@ -657,6 +681,14 @@ function prepareForEditing(html) {
 
 function cleanForSaving(doc) {
   const clone = doc.documentElement.cloneNode(true);
+  clone.classList.remove("credits-as-info-buttons");
+  const cloneBody = clone.querySelector("body");
+  if (cloneBody) cloneBody.classList.remove("credits-as-info-buttons");
+  clone.querySelectorAll(".credit-info-button,.credit-popover").forEach(node => node.remove());
+  clone.querySelectorAll("[aria-expanded][aria-controls^='photo-credit-']").forEach(node => {
+    node.removeAttribute("aria-expanded");
+    node.removeAttribute("aria-controls");
+  });
   clone.querySelectorAll("[data-editor-style]").forEach(node => node.remove());
   clone.querySelectorAll("[data-editor-selected]").forEach(node => node.removeAttribute("data-editor-selected"));
   clone.querySelectorAll("[data-editor-block-selected]").forEach(node => node.removeAttribute("data-editor-block-selected"));

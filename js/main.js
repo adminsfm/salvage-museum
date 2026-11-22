@@ -102,6 +102,72 @@ seasonBox.innerHTML =
 
 
 /*
+ PHOTO CREDIT INFO BUTTONS
+*/
+
+function setupPhotoCreditButtons() {
+  document.body.classList.add("credits-as-info-buttons");
+
+  document.querySelectorAll(".photo-placeholder + .photo-credit").forEach((credit, index) => {
+    const photo = credit.previousElementSibling;
+    if (!photo || !photo.classList.contains("photo-placeholder")) return;
+    if (photo.querySelector(".credit-info-button")) return;
+
+    const button = document.createElement("button");
+    const popup = document.createElement("div");
+    const id = `photo-credit-${index + 1}`;
+
+    button.type = "button";
+    button.className = "credit-info-button";
+    button.textContent = "i";
+    button.setAttribute("aria-label", "Show photo credit");
+    button.setAttribute("aria-expanded", "false");
+    button.setAttribute("aria-controls", id);
+
+    popup.id = id;
+    popup.className = "credit-popover";
+    popup.setAttribute("role", "note");
+    popup.textContent = credit.textContent.trim();
+
+    photo.append(button, popup);
+
+    button.addEventListener("click", function(event) {
+      event.stopPropagation();
+      const willOpen = !popup.classList.contains("open");
+
+      document.querySelectorAll(".credit-popover.open").forEach(openPopup => {
+        openPopup.classList.remove("open");
+        const openButton = openPopup.previousElementSibling;
+        if (openButton) openButton.setAttribute("aria-expanded", "false");
+      });
+
+      popup.classList.toggle("open", willOpen);
+      button.setAttribute("aria-expanded", willOpen ? "true" : "false");
+    });
+  });
+}
+
+setupPhotoCreditButtons();
+
+document.addEventListener("click", function() {
+  document.querySelectorAll(".credit-popover.open").forEach(popup => {
+    popup.classList.remove("open");
+    const button = popup.previousElementSibling;
+    if (button) button.setAttribute("aria-expanded", "false");
+  });
+});
+
+document.addEventListener("keydown", function(event) {
+  if (event.key !== "Escape") return;
+  document.querySelectorAll(".credit-popover.open").forEach(popup => {
+    popup.classList.remove("open");
+    const button = popup.previousElementSibling;
+    if (button) button.setAttribute("aria-expanded", "false");
+  });
+});
+
+
+/*
  FADE IN
 */
 
